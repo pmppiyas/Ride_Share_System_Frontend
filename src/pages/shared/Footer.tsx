@@ -69,12 +69,7 @@ const defaultLegalLinks = [
 ];
 
 const Footer = ({
-  logo = {
-    url: "https://www.shadcnblocks.com",
-    src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcnblockscom-icon.svg",
-    alt: "logo",
-    title: "Shadcnblocks.com",
-  },
+
   sections = defaultSections,
   description = "Book rides instantly, track your driver in real-time, and enjoy a smooth journey—all powered by a modern React, Tailwind, and Shadcn UI stack. Built for riders who value speed, comfort, and control.",
   socialLinks = defaultSocialLinks,

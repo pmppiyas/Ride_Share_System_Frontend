@@ -132,7 +132,7 @@ const Navbar = ({
   },
 }: NavbarProps) => {
   return (
-    <section className="p-4   flex justify-center bg-accent">
+    <section className="p-4   flex justify-center bg-accent ">
       <div className="container">
         {/* Desktop Menu */}
         <nav className="hidden justify-between lg:flex">
