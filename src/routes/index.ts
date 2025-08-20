@@ -1,7 +1,8 @@
 import App from "@/App";
 import { Login } from "@/components/modules/auth/Login";
 import Signup from "@/components/modules/auth/Signup";
-
+import DashboardHome from "@/components/modules/dashboard/DashboardHome";
+import DashboardLayout from "@/layouts/DashboardLayout";
 import Home from "@/pages/shared/Home";
 import { createBrowserRouter } from "react-router";
 
@@ -21,6 +22,17 @@ export const router = createBrowserRouter([
       {
         path: "/auth/signup",
         Component: Signup,
+      },
+    ],
+  },
+  {
+    path: "/admin",
+    Component: DashboardLayout,
+
+    children: [
+      {
+        index: true,
+        Component: DashboardHome,
       },
     ],
   },
