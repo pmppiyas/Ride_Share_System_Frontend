@@ -1,3 +1,4 @@
+import { Link } from "react-router"
 import { Book, Menu, Sunset, Trees, Zap } from "lucide-react";
 
 import {
@@ -55,35 +56,36 @@ interface NavbarProps {
 const Navbar = ({
 
   menu = [
-    { title: "Home", url: "#" },
+    { title: "Home", url: "/" },
+
     {
-      title: "Products",
-      url: "#",
+      title: "Dashboard",
+      url: "/admin",
       items: [
         {
-          title: "Blog",
+          title: "Dashboard",
           description: "The latest industry news, updates, and info",
           icon: <Book className="size-5 shrink-0" />,
-          url: "#",
+          url: "/admin",
         },
         {
-          title: "Company",
+          title: "Rides",
           description: "Our mission is to innovate and empower the world",
           icon: <Trees className="size-5 shrink-0" />,
-          url: "#",
+          url: "/admin/rides",
         },
         {
-          title: "Careers",
+          title: "Drivers",
           description: "Browse job listing and discover our workspace",
           icon: <Sunset className="size-5 shrink-0" />,
-          url: "#",
+          url: "/admin/drivers",
         },
         {
-          title: "Support",
+          title: "Riders",
           description:
             "Get in touch with our support team or visit our community forums",
           icon: <Zap className="size-5 shrink-0" />,
-          url: "#",
+          url: "/admin/riders",
         },
       ],
     },
@@ -127,20 +129,20 @@ const Navbar = ({
     },
   ],
   auth = {
-    login: { title: "Login", url: "#" },
-    signup: { title: "Sign up", url: "#" },
+    login: { title: "Login", url: "/auth/login" },
+    signup: { title: "Sign up", url: "/auth/signup" },
   },
 }: NavbarProps) => {
   return (
-    <section className="p-4   flex justify-center bg-accent ">
+    <section className="p-4   flex justify-center bg-primary/10 shadow-lg shadow-primary/20">
       <div className="container">
         {/* Desktop Menu */}
         <nav className="hidden justify-between lg:flex">
           <div className="flex items-center gap-6">
             {/* Logo */}
             <Logo />
-            <div className="flex items-center">
-              <NavigationMenu>
+            <div className="flex items-center ">
+              <NavigationMenu >
                 <NavigationMenuList>
                   {menu.map((item) => renderMenuItem(item))}
                 </NavigationMenuList>
@@ -149,10 +151,10 @@ const Navbar = ({
           </div>
           <div className="flex gap-2">
             <Button asChild variant="outline" size="sm">
-              <a href={auth.login.url}>{auth.login.title}</a>
+              <Link to={auth.login.url}>{auth.login.title}</Link>
             </Button>
             <Button asChild size="sm">
-              <a href={auth.signup.url}>{auth.signup.title}</a>
+              <Link to={auth.signup.url}>{auth.signup.title}</Link>
             </Button>
           </div>
         </nav>
@@ -184,11 +186,11 @@ const Navbar = ({
                   </Accordion>
 
                   <div className="flex flex-col gap-3">
-                    <Button asChild variant="outline">
-                      <a href={auth.login.url}>{auth.login.title}</a>
+                    <Button asChild variant="outline" size="sm">
+                      <Link to={auth.login.url}>{auth.login.title}</Link>
                     </Button>
-                    <Button asChild>
-                      <a href={auth.signup.url}>{auth.signup.title}</a>
+                    <Button asChild size="sm">
+                      <Link to={auth.signup.url}>{auth.signup.title}</Link>
                     </Button>
                   </div>
                 </div>
@@ -206,7 +208,7 @@ const renderMenuItem = (item: MenuItem) => {
     return (
       <NavigationMenuItem key={item.title}>
         <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
-        <NavigationMenuContent className="bg-popover text-popover-foreground">
+        <NavigationMenuContent className="bg-popover text-popover-foreground min-w-max z-100">
           {item.items.map((subItem) => (
             <NavigationMenuLink asChild key={subItem.title} className="w-80">
               <SubMenuLink item={subItem} />
@@ -254,9 +256,9 @@ const renderMobileMenuItem = (item: MenuItem) => {
 
 const SubMenuLink = ({ item }: { item: MenuItem }) => {
   return (
-    <a
+    <Link to={item.url}
       className="hover:bg-muted hover:text-accent-foreground flex select-none flex-row gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors"
-      href={item.url}
+      data-slot="navigation-menu-link"
     >
       <div className="text-foreground">{item.icon}</div>
       <div>
@@ -267,7 +269,7 @@ const SubMenuLink = ({ item }: { item: MenuItem }) => {
           </p>
         )}
       </div>
-    </a>
+    </Link>
   );
 };
 

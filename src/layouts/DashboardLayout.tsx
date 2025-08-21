@@ -23,6 +23,7 @@ import {
   HelpCircle,
   Zap,
   Globe,
+  CircleGauge
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -40,7 +41,8 @@ const DashboardLayout = () => {
     {
       section: 'main',
       items: [
-        { id: 'dashboard', label: 'Dashboard', path: "/admin", icon: Home, active: true },
+        { id: 'home', label: 'Home', path: "/", icon: Home, },
+        { id: 'dashboard', label: 'Dashboard', path: "/admin", icon: CircleGauge, active: true },
         { id: 'rides', label: 'Rides', path: "/admin/rides", icon: Navigation, badge: '24' },
         { id: 'drivers', label: 'Drivers', path: "/admin/drivers", icon: UserCheck, badge: '432' },
         { id: 'riders', label: 'Riders', path: "/admin/rides", icon: Users },
@@ -107,38 +109,23 @@ const DashboardLayout = () => {
   return (
     <>
       <Navbar></Navbar>
-      <div className="flex h-screen bg-background overflow-hidden">
+      <div className="flex h-screen bg-background overflow-hidden " >
         {/* Sidebar */}
-        <aside className={`
-        fixed inset-y-0 left-0 z-50 w-72 bg-card border-r transform transition-transform duration-300 ease-in-out
-        lg:translate-x-0 lg:static lg:inset-0 
-        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-      `}>
-          {/* Sidebar Header */}
-          <div className="flex items-center justify-between h-16 px-6 border-b bg-card">
-            <div className="flex items-center gap-3">
-              <div className="rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 p-2">
-                <Car className="h-5 w-5 text-white" />
-              </div>
-              <div>
-                <h1 className="text-lg font-bold">RideManager</h1>
-                <p className="text-xs text-muted-foreground">Admin Dashboard</p>
-              </div>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="lg:hidden"
-              onClick={() => setSidebarOpen(false)}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
+        <aside
+          className={`
+    fixed inset-y-0 left-0 z-50 w-72 bg-card border-r transform transition-transform duration-300 ease-in-out
+    flex flex-col 
+    lg:translate-x-0 lg:static lg:inset-0 
+    ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+  `}
+        >
+
 
           {/* User Profile Section */}
           <ProfileBadge />
-          {/* Navigation */}
-          <nav className="flex-1 overflow-y-auto p-4 space-y-6">
+
+          {/* Navigation - Make this scrollable */}
+          <nav className=" overflow-y-auto p-4 space-y-6">
             {navigationItems.map((section) => (
               <div key={section.section}>
                 {section.title && (
@@ -148,9 +135,7 @@ const DashboardLayout = () => {
                     </h1>
                   </div>
                 )}
-                <div className="space-y-1">
-                  {section.items.map(renderSidebarItem)}
-                </div>
+                <div className="space-y-1">{section.items.map(renderSidebarItem)}</div>
               </div>
             ))}
           </nav>
@@ -174,6 +159,7 @@ const DashboardLayout = () => {
             </div>
           </div>
         </aside>
+
 
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col overflow-hidden">
