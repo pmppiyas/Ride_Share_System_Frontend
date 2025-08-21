@@ -1,98 +1,3 @@
-// import { Button } from "@/components/ui/button";
-// import { Input } from "@/components/ui/input";
-// import { Label } from "@/components/ui/label";
-
-// interface Signup2Props {
-//   heading?: string;
-//   logo: {
-//     url: string;
-//     src: string;
-//     alt: string;
-//     title?: string;
-//   };
-//   buttonText?: string;
-//   googleText?: string;
-//   signupText?: string;
-//   signupUrl?: string;
-// }
-
-// const Signup = ({
-//   heading = "Signup",
-//   logo = {
-//     url: "https://www.shadcnblocks.com",
-//     src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcnblockscom-wordmark.svg",
-//     alt: "logo",
-//     title: "shadcnblocks.com",
-//   },
-//   buttonText = "Create Account",
-//   signupText = "Already a user?",
-//   signupUrl = "https://shadcnblocks.com",
-// }: Signup2Props) => {
-//   return (
-//     <section className="bg-muted h-screen">
-//       <div className="flex h-full items-center justify-center">
-//         <div className="flex flex-col items-center gap-6 lg:justify-start">
-//           {/* Logo */}
-//           <a href={logo.url}>
-//             <img
-//               src={logo.src}
-//               alt={logo.alt}
-//               title={logo.title}
-//               className="h-10 dark:invert"
-//             />
-//           </a>
-//           <div className="min-w-sm border-muted bg-background flex w-full max-w-sm flex-col items-center gap-y-4 rounded-md border px-6 py-8 shadow-md">
-//             {heading && <h1 className="text-xl font-semibold">{heading}</h1>}
-//             <div className="flex w-full flex-col gap-2">
-//               <Label>Email</Label>
-//               <Input
-//                 type="email"
-//                 placeholder="Email"
-//                 className="text-sm"
-//                 required
-//               />
-//             </div>
-//             <div className="flex w-full flex-col gap-2">
-//               <Label>Password</Label>
-//               <Input
-//                 type="password"
-//                 placeholder="Password"
-//                 className="text-sm"
-//                 required
-//               />
-//             </div>
-//             <div className="flex w-full flex-col gap-2">
-//               <Label>Confirm Password</Label>
-//               <Input
-//                 type="password"
-//                 placeholder="Password"
-//                 className="text-sm"
-//                 required
-//               />
-//             </div>
-//             <Button type="submit" className="w-full">
-//               {buttonText}
-//             </Button>
-//           </div>
-//           <div className="text-muted-foreground flex justify-center gap-1 text-sm">
-//             <p>{signupText}</p>
-//             <a
-//               href={signupUrl}
-//               className="text-primary font-medium hover:underline"
-//             >
-//               Login
-//             </a>
-//           </div>
-//         </div>
-//       </div>
-//     </section>
-//   );
-// };
-
-// export { Signup };
-
-
-
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -107,28 +12,39 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router";
-import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import SocialLoginButtons from "@/components/modules/auth/SocialBtn";
 import PasswordInput from '@/components/ui/passwordInput';
+import { useRegisterMutation } from '@/redux/features/auth/auth.api';
+import type { IError } from '@/types';
 
 
 const registerSchema = z
   .object({
-    fullName: z
+    name: z.string().min(1, { message: "Name is required" }),
+    email: z
       .string()
-      .min(2, { message: "Name is too short, Minimum 2 charecters long" })
-      .max(50, { message: "Name is too long, Max 50 charecter long" }),
+      .min(1, { message: "Email is required" })
+      .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, {
+        message: "Please enter a valid email address",
+      }),
 
-    email: z.email("Invalid email address"),
+    phone: z.string().regex(/^01[3-9]\d{8}$/, {
+      message: "Invalid Bangladeshi phone number",
+    }),
 
     password: z
       .string()
-      .min(8, { message: "Password must be at least 8 characters long." })
-      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/, {
-        message:
-          "Password must include uppercase, lowercase, and a special character.",
-      }),
+      .min(6, { message: "Password must be at least 6 characters" })
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&^()_])[A-Za-z\d@$!%*?#&^()_]{6,}$/,
+        {
+          message:
+            "Password must include uppercase, lowercase, number, and special character",
+        }
+      ),
+
     comfirmPassword: z
       .string()
       .min(8, { message: "Password must be at least 8 characters long." })
@@ -148,13 +64,15 @@ export default function Signup() {
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      fullName: "",
+      name: "",
       email: "",
+      phone: "",
       password: "",
       comfirmPassword: "",
     },
   });
 
+  const [register] = useRegisterMutation(undefined)
 
   const navigate = useNavigate();
 
@@ -162,16 +80,21 @@ export default function Signup() {
 
     try {
       const userInfo = {
-        name: data.fullName,
+        name: data.name,
         email: data.email,
+        phone: data.phone,
         password: data.password,
+        location: {
+          type: "Point",
+          coordinates: [40.252, 45.751],
+        }
       };
       console.log(userInfo);
-      // navigate("/auth/verify", {
-      //   state: data.email,
-      // });
-    } catch (error) {
-      console.log(error);
+      await register(userInfo).unwrap()
+      navigate("/auth/login");
+    } catch (err) {
+      const error = err as IError;
+      console.log(error.status)
 
     }
   };
@@ -185,7 +108,7 @@ export default function Signup() {
             {/* Full Name */}
             <FormField
               control={form.control}
-              name="fullName"
+              name="name"
               render={({ field }) => (
                 <>
                   <FormLabel>Full Name</FormLabel>
@@ -208,6 +131,25 @@ export default function Signup() {
                     <Input
                       type="email"
                       placeholder="you@example.com"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </>
+              )}
+            />
+
+            {/* Phone */}
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <>
+                  <FormLabel>Phone</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="018XXXXXXXX"
                       {...field}
                     />
                   </FormControl>

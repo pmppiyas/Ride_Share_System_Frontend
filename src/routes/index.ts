@@ -1,5 +1,5 @@
 import App from "@/App";
-import { Login } from "@/components/modules/auth/Login";
+import Login from "@/components/modules/auth/Login";
 import Signup from "@/components/modules/auth/Signup";
 import DashboardHome from "@/components/modules/dashboard/DashboardHome";
 import Driver from "@/components/modules/dashboard/Driver";

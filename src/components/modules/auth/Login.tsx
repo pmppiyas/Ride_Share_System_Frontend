@@ -1,55 +1,124 @@
-import Logo from '@/assets/icons/Logo';
-import { Button } from "@/components/ui/button";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+import {
+  Form,
+  FormField,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Link } from "react-router"
+import { Button } from "@/components/ui/button";
+import { Link, useNavigate } from "react-router";
+import PasswordInput from "@/components/ui/passwordInput";
+import { useLoginMutation } from '@/redux/features/auth/auth.api';
+import type { IError } from '@/types';
+import { toast } from "sonner"
 
 
-const Login = () => {
+const loginSchema = z.object({
+  email: z
+    .string()
+    .min(1, { message: "Email is required" })
+    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, {
+      message: "Please enter a valid email address",
+    }),
+  password: z.string().min(6, { message: "Password is required" }),
+});
+
+type LoginFormValues = z.infer<typeof loginSchema>;
+
+export default function Login() {
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const [login] = useLoginMutation();
+  const navigate = useNavigate();
+
+  const onSubmit = async (data: LoginFormValues) => {
+    try {
+      await login(data).unwrap();
+      navigate("/");
+      toast.success("Login successful");
+    } catch (err) {
+      const error = err as IError;
+      console.log("Login error:", error);
+      if (error.status === 404) {
+        form.setError("email", {
+          type: "manual",
+          message: error?.data?.message
+        })
+        toast.error(error?.data?.message || "Login failed");
+      }
+
+    }
+  };
+
   return (
-    <section className="bg-muted  min-h-[calc(100vh-70px)] flex justify-center items-center  ">
-      <div className="flex h-full items-center justify-center">
-        <div className="flex flex-col items-center gap-6 lg:justify-start">
-          {/* Logo */}
-          <Logo />
-          <div className="min-w-sm border-muted bg-background flex w-full max-w-sm flex-col items-center gap-y-4 rounded-md border px-6 py-8 shadow-md">
-            <h1 className="text-xl font-semibold">Login</h1>
-            <div className="flex w-full flex-col gap-2">
-              <Label>Email</Label>
-              <Input
-                type="email"
-                placeholder="Email"
-                className="text-sm"
-                required
-              />
-            </div>
-            <div className="flex w-full flex-col gap-2">
-              <Label>Password</Label>
-              <Input
-                type="password"
-                placeholder="Password"
-                className="text-sm"
-                required
-              />
-            </div>
-            <Button type="submit" className="w-full">
-              Login
-            </Button>
-          </div>
-          <div className="text-muted-foreground flex items-center justify-center gap-1 text-sm">
-            <p>Need an account?</p>
+    <section className="bg-muted min-h-[calc(100vh-70px)] py-1 flex justify-center items-center">
+      <div className="my-10 p-6 rounded-lg shadow-sm bg-background max-w-md w-full">
+        <h2 className="text-2xl font-semibold text-center mb-6">Login</h2>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+            {/* Email */}
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" placeholder="you@example.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </>
+              )}
+            />
 
-            <Link
-              to={"/auth/signup"}
-              className="text-primary font-medium hover:underline"
+            {/* Password */}
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <PasswordInput {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </>
+              )}
+            />
+
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={form.formState.isSubmitting}
             >
-              Sign up
-            </Link>
-          </div>
+              {form.formState.isSubmitting ? "Logging in..." : "Login"}
+            </Button>
+          </form>
+        </Form>
+
+        {/* Footer */}
+        <div className="text-muted-foreground flex items-center justify-center gap-1 text-sm mt-4">
+          <p>Need an account?</p>
+          <Link
+            to="/auth/signup"
+            className="text-primary font-medium hover:underline"
+          >
+            Sign up
+          </Link>
         </div>
       </div>
     </section>
   );
-};
-
-export { Login };
+}
