@@ -6,13 +6,17 @@ import { router } from '@/routes/index.ts'
 import './index.css'
 import { store } from '@/redux/store'
 import { Toaster } from '@/components/ui/sonner'
+import { AuthProvider } from '@/provider/auth.provider'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
+
     <ReduxProvider store={store}>
-      <Toaster />
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <Toaster />
+        <RouterProvider router={router} />
+      </AuthProvider>
     </ReduxProvider>
 
-  </StrictMode>,
+  </StrictMode >,
 )
