@@ -6,9 +6,10 @@ import {
   ChevronDown, Settings, Bell
 } from "lucide-react";
 import { Progress } from '@/components/ui/progress';
-
+import { useNavigate } from "react-router"
 
 export default function ProfileBadge() {
+  const navigate = useNavigate()
   return (
     <div className="p-4 border-b bg-muted/30">
       <div className="flex items-center gap-3 mb-3">
@@ -27,7 +28,7 @@ export default function ProfileBadge() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/profile")}>
               <Settings className="mr-2 h-4 w-4" />
               Profile Settings
             </DropdownMenuItem>

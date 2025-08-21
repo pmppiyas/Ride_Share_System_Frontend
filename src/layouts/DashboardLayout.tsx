@@ -45,7 +45,7 @@ const DashboardLayout = () => {
         { id: 'dashboard', label: 'Dashboard', path: "/admin", icon: CircleGauge, active: true },
         { id: 'rides', label: 'Rides', path: "/admin/rides", icon: Navigation, badge: '24' },
         { id: 'drivers', label: 'Drivers', path: "/admin/drivers", icon: UserCheck, badge: '432' },
-        { id: 'riders', label: 'Riders', path: "/admin/rides", icon: Users },
+        { id: 'riders', label: 'Riders', path: "/admin/riders", icon: Users },
         { id: 'analytics', label: 'Analytics', path: "/admin/analytics", icon: BarChart3 },
         { id: 'earnings', label: 'Earnings', path: "/admin/earnings", icon: DollarSign },
       ]
@@ -113,11 +113,10 @@ const DashboardLayout = () => {
         {/* Sidebar */}
         <aside
           className={`
-    fixed inset-y-0 left-0 z-50 w-72 bg-card border-r transform transition-transform duration-300 ease-in-out
-    flex flex-col 
-    lg:translate-x-0 lg:static lg:inset-0 
-    ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-  `}
+          fixed inset-y-0 left-0 z-50 w-72 bg-card border-r transform transition-transform duration-300 ease-in-out
+          flex flex-col 
+         lg:translate-x-0 lg:static lg:inset-0 
+         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
         >
 
 
