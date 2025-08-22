@@ -10,19 +10,23 @@ export const authApi = baseApi.injectEndpoints({
       }),
     }),
     getDriverRequest: builder.query({
-      query: () => ({
-        url: "/driver/all-driver-request",
-        method: "GET",
-      }),
+      query: (params) => {
+        const queryString = new URLSearchParams(params).toString();
+        return {
+          url: `/driver/all-driver-request?${queryString}`,
+          method: "GET",
+        };
+      },
       transformResponse: (res) => res.data,
     }),
     driverReqHandle: builder.mutation({
       query: ({ id, status }) => ({
-        url: `/driver/handle-request/${id}`,
-        method: "POST",
-        data: status,
+        url: `/driver/request-handle/${id}`,
+        method: "PATCH",
+        data: { status },
       }),
     }),
+
     getDrivers: builder.query({
       query: (params) => {
         const queryString = new URLSearchParams(params).toString();
