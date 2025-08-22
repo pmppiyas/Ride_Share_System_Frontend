@@ -4,6 +4,7 @@ import Signup from "@/components/modules/auth/Signup";
 import DashboardHome from "@/components/modules/dashboard/DashboardHome";
 import Driver from "@/components/modules/dashboard/Driver";
 import Rider from "@/components/modules/dashboard/Riders";
+import Rides from "@/components/modules/dashboard/Rides";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import Home from "@/pages/shared/Home";
 import Profile from "@/pages/shared/Profile";
@@ -48,6 +49,10 @@ export const router = createBrowserRouter([
       {
         path: "riders",
         Component: Rider,
+      },
+      {
+        path: "rides",
+        Component: Rides,
       },
     ],
   },

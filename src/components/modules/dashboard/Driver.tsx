@@ -60,11 +60,11 @@ const Driver = () => {
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-bold mb-4 text-primary">Available Drivers</h2>
           <h2 className="text-xl font-bold mb-4 text-primary">
-            Total: {drivers.users.length} Drivers
+            Total: {drivers?.users?.length} Drivers
           </h2>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {drivers.users.map((driver: any) => (
+          {drivers?.users.map((driver: any) => (
             <div
               key={driver._id}
               className="border rounded-xl shadow p-4 bg-white hover:shadow-lg transition"
@@ -79,8 +79,12 @@ const Driver = () => {
               <p className="text-sm text-gray-600 mb-1"><strong>Available:</strong> {driver.isAvailable ? "Yes" : "No"}</p>
               <p className="text-sm text-gray-600"><strong>Created:</strong> {new Date(driver.createdAt).toLocaleDateString()}</p>
               <div className="mt-4 flex justify-between">
-                <Button variant="outline">Suspend</Button>
-                <Button className="ml-2">Contacts</Button>
+                <Button onClick={() => {
+                  toast.success('This feature is coming soon!');
+                }} variant="outline">Suspend</Button>
+                <Button onClick={() => {
+                  toast.success('This feature is coming soon!');
+                }} className="ml-2">Contacts</Button>
               </div>
             </div>
           ))}
@@ -128,11 +132,17 @@ const Driver = () => {
             </div>
           ))}
         </div>
-        <TourPagination
-          page={requests?.meta?.page}
-          totalPage={requests?.meta?.totalPage}
-          onPageChange={(newPage) => setCurrentRDPage(newPage)}
-        />
+        {requests.users.length > 0 ? (
+          <TourPagination
+            page={requests?.meta?.page}
+            totalPage={requests?.meta?.totalPage}
+            onPageChange={(newPage) => setCurrentDPage(newPage)}
+          />
+        ) : (
+          <div className="flex h-20 w-full border-2 items-center justify-center">
+            No Drivers Found!
+          </div>
+        )}
       </div>
 
       {/* Modal for Accept/Cancel */}

@@ -1,8 +1,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from '@/components/ui/card';
-import { DollarSign, Navigation, Star, TrendingUp, UserCheck, Clock, MapPin, Activity } from "lucide-react"
+import { DollarSign, Navigation, Star, TrendingUp, UserCheck, Clock, Activity } from "lucide-react"
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { AreaChart, Area, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import RideCard from '@/components/modules/dashboard/RideCard';
 
 export default function DashboardHome() {
   // Sample data
@@ -61,19 +61,7 @@ export default function DashboardHome() {
     { name: 'Sun', revenue: 6700, rides: 67 }
   ];
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed': return 'bg-green-500';
-      case 'in-progress': return 'bg-yellow-500';
-      case 'cancelled': return 'bg-red-500';
-      case 'pending': return 'bg-purple-500';
-      default: return 'bg-gray-500';
-    }
-  };
 
-  const getStatusText = (status: string) => {
-    return status.charAt(0).toUpperCase() + status.slice(1).replace('-', ' ');
-  };
 
   return (
     <div className="p-6 space-y-6">
@@ -233,40 +221,7 @@ export default function DashboardHome() {
         <CardContent>
           <div className="space-y-4">
             {recentRides.map((ride) => (
-              <div key={ride.id} className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
-                <div className="flex items-center gap-4">
-                  <div className={`w-3 h-3 rounded-full ${getStatusColor(ride.status)}`} />
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold">{ride.rider}</span>
-                      <span className="text-muted-foreground">→</span>
-                      <span className="font-medium">{ride.driver}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <MapPin className="h-3 w-3" />
-                      <span>{ride.pickup} → {ride.destination}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="text-right space-y-1">
-                  <div className="flex items-center gap-2">
-                    <Badge variant={ride.status === 'completed' ? 'default' : ride.status === 'in-progress' ? 'secondary' : 'outline'}>
-                      {getStatusText(ride.status)}
-                    </Badge>
-                    <span className="font-bold">৳{ride.fare}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    {ride.rating && (
-                      <>
-                        <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                        <span>{ride.rating}</span>
-                        <span>•</span>
-                      </>
-                    )}
-                    <span>{ride.time}</span>
-                  </div>
-                </div>
-              </div>
+              <RideCard ride={ride} />
             ))}
           </div>
         </CardContent>
