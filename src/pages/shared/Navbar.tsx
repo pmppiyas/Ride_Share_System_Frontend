@@ -24,6 +24,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import Logo from '@/assets/icons/Logo';
+import { useAuth } from '@/hooks/useAuth';
+import { toast } from "sonner";
 
 interface MenuItem {
   title: string;
@@ -54,6 +56,7 @@ interface NavbarProps {
 }
 
 const Navbar = ({
+
 
   menu = [
     { title: "Home", url: "/" },
@@ -133,6 +136,13 @@ const Navbar = ({
     signup: { title: "Sign up", url: "/auth/signup" },
   },
 }: NavbarProps) => {
+  const { me, isError } = useAuth()
+  if (isError) {
+    toast.error("Failed to fetch user data. Please try again.");
+  }
+  const user = me?.data;
+
+
   return (
     <section className="p-4   flex justify-center bg-primary/10 shadow-lg shadow-primary/20">
       <div className="container">
@@ -150,12 +160,14 @@ const Navbar = ({
             </div>
           </div>
           <div className="flex gap-2">
-            <Button asChild variant="outline" size="sm">
-              <Link to={auth.login.url}>{auth.login.title}</Link>
-            </Button>
-            <Button asChild size="sm">
-              <Link to={auth.signup.url}>{auth.signup.title}</Link>
-            </Button>
+            {user ?
+              <Button variant={"outline"}>
+                Logout
+              </Button>
+              :
+              <Button asChild size="sm">
+                <Link to={auth.signup.url}>{auth.signup.title}</Link>
+              </Button>}
           </div>
         </nav>
 
