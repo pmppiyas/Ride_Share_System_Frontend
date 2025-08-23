@@ -7,6 +7,7 @@ import Home from "@/pages/shared/Home";
 import Profile from "@/pages/shared/Profile";
 import { adminNavItems } from "@/routes/adminNavItems";
 import { driverNavItems } from "@/routes/driverNavItems";
+import { riderNavItems } from "@/routes/riderNavItems";
 import { Role } from "@/types";
 import { generateRoutes } from "@/utils/generateRoutes";
 import { createBrowserRouter } from "react-router";
@@ -46,7 +47,12 @@ export const router = createBrowserRouter([
   },
   {
     path: "/driver",
-    Component: checkAuth(DashboardLayout, [Role.DRIVER, Role.RIDER]),
+    Component: checkAuth(DashboardLayout, [Role.DRIVER]),
     children: [...generateRoutes(driverNavItems)],
+  },
+  {
+    path: "/rider",
+    Component: checkAuth(DashboardLayout, [Role.RIDER]),
+    children: [...generateRoutes(riderNavItems)],
   },
 ]);
