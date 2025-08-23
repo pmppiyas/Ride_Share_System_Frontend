@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from '@/co
 import { DollarSign, Navigation, Star, TrendingUp, UserCheck, Clock, Activity } from "lucide-react"
 import { Button } from '@/components/ui/button';
 import { AreaChart, Area, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import RideCard from '@/components/modules/dashboard/RideCard';
+import RideCard from '@/components/modules/dashboard/admin/RideCard';
 import { useGetRidesQuery } from '@/redux/features/ride/ride.api';
 import { useNavigate } from "react-router"
 

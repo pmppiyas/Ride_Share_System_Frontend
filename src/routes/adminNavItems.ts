@@ -1,7 +1,8 @@
-import DashboardHome from "@/components/modules/dashboard/DashboardHome";
-import Driver from "@/components/modules/dashboard/Driver";
-import Rider from "@/components/modules/dashboard/Riders";
-import Rides from "@/components/modules/dashboard/Rides";
+import DashboardHome from "@/components/modules/dashboard/admin/DashboardHome";
+import Driver from "@/components/modules/dashboard/admin/Driver";
+import Rider from "@/components/modules/dashboard/admin/Riders";
+import Rides from "@/components/modules/dashboard/admin/Rides";
+import Setting from "@/components/modules/dashboard/Setting";
 import {
   Home,
   Car,
@@ -76,7 +77,7 @@ export const adminNavItems = [
         label: "Settings",
         path: "settings",
         icon: Settings,
-        component: DashboardHome,
+        component: Setting,
       },
     ],
   },

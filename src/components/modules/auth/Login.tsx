@@ -51,7 +51,7 @@ export default function Login() {
       const error = err as IError;
       console.log("Login error:", error);
       if (error.status === 404) {
-        form.setError("email", {
+        form.setError("password", {
           type: "manual",
           message: error?.data?.message
         })

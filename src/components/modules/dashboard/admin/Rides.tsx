@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import TourPagination from "@/components/modules/shared/TourPagination";
 import { useGetRidesQuery } from '@/redux/features/ride/ride.api';
-import RideCard from '@/components/modules/dashboard/RideCard';
+import RideCard from '@/components/modules/dashboard/admin/RideCard';
 
 export default function Rides() {
   const [currentPage, setCurrentPage] = useState(1);

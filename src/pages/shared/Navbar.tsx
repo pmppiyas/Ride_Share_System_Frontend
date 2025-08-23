@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +19,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { Role } from "@/types";
 import { getRolebasedLinks } from '@/utils/getRolebaseLinks';
+import { useLogoutMutation } from '@/redux/features/auth/auth.api';
 
 interface NavbarProps {
   auth?: {
@@ -33,16 +34,12 @@ const Navbar = ({
     signup: { title: "Sign up", url: "/auth/signup" },
   },
 }: NavbarProps) => {
-  const { me, isError } = useAuth();
+  const { me } = useAuth();
 
-  if (isError) {
-    toast.error("Failed to fetch user data. Please try again.");
-  }
+
 
   const user = me?.data;
   const role = user?.role || Role.RIDER;
-
-  ;
 
   const navLinks = [
     { title: "Home", url: "/" },
@@ -51,6 +48,23 @@ const Navbar = ({
     { title: "Pricing", url: "/pricing" },
     { title: "Blog", url: "/blog" },
   ];
+
+
+  const navigate = useNavigate();
+  const [logout] = useLogoutMutation()
+
+  const handleLogout = async () => {
+    try {
+      const res = await logout({}).unwrap();
+      toast.success(res.message);
+      navigate("/auth/login");
+    } catch (err) {
+      toast.error("Logout failed.")
+      console.log(err);
+
+    }
+  };
+
 
   return (
     <section className="p-4 flex justify-center bg-primary/10 shadow-lg shadow-primary/20">
@@ -81,7 +95,7 @@ const Navbar = ({
           {/* Right: Auth Buttons */}
           <div className="flex gap-2">
             {user ? (
-              <Button variant="outline">Logout</Button>
+              <Button onClick={() => handleLogout()} variant="outline">Logout</Button>
             ) : (
               <>
                 <Button asChild variant="outline" size="sm">
@@ -123,7 +137,7 @@ const Navbar = ({
 
                 <div className="flex flex-col gap-3 mt-4">
                   {user ? (
-                    <Button variant="outline">Logout</Button>
+                    <Button onClick={() => handleLogout()} variant="outline">Logout</Button>
                   ) : (
                     <>
                       <Button asChild variant="outline" size="sm">

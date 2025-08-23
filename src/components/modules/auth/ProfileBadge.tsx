@@ -6,20 +6,43 @@ import {
   ChevronDown, Settings, Bell
 } from "lucide-react";
 import { Progress } from '@/components/ui/progress';
-import { useNavigate } from "react-router"
+import { useNavigate } from "react-router";
 
-export default function ProfileBadge() {
-  const navigate = useNavigate()
+import { toast } from "sonner";
+import { useLogoutMutation } from '@/redux/features/auth/auth.api';
+
+export default function ProfileBadge({ me }) {
+  const navigate = useNavigate();
+  const [logout] = useLogoutMutation()
+
+  const handleLogout = async () => {
+    try {
+      const res = await logout({}).unwrap();
+      toast.success(res.message);
+      navigate("/auth/login");
+    } catch (err) {
+      toast.error("Logout failed.")
+      console.log(err);
+
+    }
+  };
+
+
   return (
     <div className="p-4 border-b bg-muted/30">
       <div className="flex items-center gap-3 mb-3">
         <Avatar className="h-10 w-10 border-2 border-primary/20">
           <AvatarImage src="/api/placeholder/40/40" alt="Admin" />
-          <AvatarFallback className="bg-primary/10">AD</AvatarFallback>
+          <AvatarFallback className="bg-primary/10">
+            {me?.name?.slice(0, 2).toUpperCase()}
+          </AvatarFallback>
         </Avatar>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-sm truncate">Admin User</p>
-          <p className="text-xs text-muted-foreground truncate">admin@ridemanager.com</p>
+          <div className='flex items-center  gap-6'>
+            <p className="font-semibold text-sm truncate">{me.name}</p>
+            <p className="font-semibold text-[10px] truncate">( {me.role} )</p>
+          </div>
+          <p className="text-xs text-muted-foreground truncate">{me.email}</p>
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -37,7 +60,7 @@ export default function ProfileBadge() {
               Notifications
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-red-600">
+            <DropdownMenuItem onClick={() => handleLogout()} className="text-red-600">
               <LogOut className="mr-2 h-4 w-4" />
               Sign Out
             </DropdownMenuItem>

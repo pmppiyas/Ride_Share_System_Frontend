@@ -1,5 +1,6 @@
 import { Home, Settings } from "lucide-react";
-import DashboardHome from "@/components/modules/dashboard/DashboardHome";
+import Setting from "@/components/modules/dashboard/Setting";
+import DHome from "@/components/modules/dashboard/driver/Home";
 
 export const driverNavItems = [
   {
@@ -10,7 +11,7 @@ export const driverNavItems = [
         label: "Dashboard",
         icon: Home,
         index: true,
-        component: DashboardHome,
+        component: DHome,
       },
     ],
   },
@@ -22,7 +23,7 @@ export const driverNavItems = [
         label: "Settings",
         path: "settings",
         icon: Settings,
-        component: DashboardHome,
+        component: Setting,
       },
     ],
   },

@@ -18,7 +18,6 @@ export default function Profile() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [driverRegister] = useDriverRegisterMutation(undefined)
-  console.log('👤 User Data:', user);
   const requested = user.approvalStatus === 'pending';
   const approved = user.approvalStatus === 'approved';
   console.log(approved)
