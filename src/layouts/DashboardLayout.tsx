@@ -1,29 +1,14 @@
-import { useState } from 'react';
-import { Link, Outlet } from "react-router";
+import { useState, useEffect } from 'react';
+import { Link, Outlet, useLocation } from "react-router";
 import {
-  BarChart3,
-  Car,
-  Users,
-  DollarSign,
   Bell,
-  Settings,
   Search,
   Filter,
-  UserCheck,
-  Activity,
-  Navigation,
-  Shield,
   Menu,
-  X,
-  Home,
-  Route,
-  CreditCard,
   UserPlus,
   AlertTriangle,
-  HelpCircle,
   Zap,
   Globe,
-  CircleGauge
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -31,46 +16,20 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Navbar } from '@/pages/shared/Navbar';
 import ProfileBadge from '@/components/modules/auth/ProfileBadge';
+import { getNavItems } from '@/utils/getNavItems';
+import { useAuth } from '@/hooks/useAuth';
+import { getRolebasedLinks } from '@/utils/getRolebaseLinks';
 
 const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('dashboard');
   const [selectedPeriod, setSelectedPeriod] = useState('7d');
+  const location = useLocation();
+  const { me } = useAuth();
 
-  const navigationItems = [
-    {
-      section: 'main',
-      items: [
-        { id: 'home', label: 'Home', path: "/", icon: Home, },
-        { id: 'dashboard', label: 'Dashboard', path: "/admin", icon: CircleGauge, active: true },
-        { id: 'rides', label: 'Rides', path: "/admin/rides", icon: Navigation, badge: '24' },
-        { id: 'drivers', label: 'Drivers', path: "/admin/drivers", icon: UserCheck, badge: '432' },
-        { id: 'riders', label: 'Riders', path: "/admin/riders", icon: Users },
-        { id: 'analytics', label: 'Analytics', path: "/admin/analytics", icon: BarChart3 },
-        { id: 'earnings', label: 'Earnings', path: "/admin/earnings", icon: DollarSign },
-      ]
-    },
-    {
-      section: 'management',
-      title: 'Management',
-      items: [
-        { id: 'routes', label: 'Routes', icon: Route },
-        { id: 'payments', label: 'Payments', icon: CreditCard },
-        { id: 'notifications', label: 'Notifications', icon: Bell, badge: '3' },
-        { id: 'support', label: 'Support', icon: HelpCircle },
-      ]
-    },
-    {
-      section: 'system',
-      title: 'System',
-      items: [
-        { id: 'settings', label: 'Settings', icon: Settings },
-        { id: 'reports', label: 'Reports', icon: Activity },
-        { id: 'security', label: 'Security', icon: Shield },
-      ]
-    }
-  ];
 
+  const userRole = me?.data?.role;
+  const navItems = getNavItems(userRole);
 
 
   const quickActions = [
@@ -79,62 +38,68 @@ const DashboardLayout = () => {
     { label: 'System Health', icon: Zap, color: 'bg-green-500' },
     { label: 'Send Broadcast', icon: Globe, color: 'bg-purple-500' }
   ];
+  useEffect(() => {
+    setActiveSection(location.pathname);
+  }, [location]);
 
+  const renderSidebarItem = (item: any) => {
+    const route = getRolebasedLinks(userRole);
+    const fullPath = item.path ? `${route}/${item.path}` : route;
 
+    const isActive = activeSection === fullPath;
 
-  const renderSidebarItem = (item) => (
-    <Link to={item.path}
-      key={item.id}
-      onClick={() => setActiveSection(item.id)}
-      className={`w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${activeSection === item.id
-        ? 'bg-primary text-primary-foreground shadow-md'
-        : 'text-muted-foreground hover:text-foreground hover:bg-accent'
-        }`}
-    >
-      <div className="flex items-center gap-3">
-        <item.icon className="h-4 w-4" />
-        <span className="truncate">{item.label}</span>
-      </div>
-      {item.badge && (
-        <Badge
-          variant={activeSection === item.id ? "secondary" : "outline"}
-          className="text-xs px-2 py-0.5"
-        >
-          {item.badge}
-        </Badge>
-      )}
-    </Link>
-  );
+    return (
+      <Link
+        to={fullPath}
+        key={item.id}
+        onClick={() => setSidebarOpen(false)}
+        className={`w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${isActive
+          ? 'bg-primary text-primary-foreground shadow-md'
+          : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+          }`}
+      >
+        <div className="flex items-center gap-3">
+          <item.icon className="h-4 w-4" />
+          <span className="truncate">{item.label}</span>
+        </div>
+        {item.badge && (
+          <Badge
+            variant={isActive ? "secondary" : "outline"}
+            className="text-xs px-2 py-0.5"
+          >
+            {item.badge}
+          </Badge>
+        )}
+      </Link>
+    );
+  };
 
   return (
     <>
-      <Navbar></Navbar>
-      <div className="flex h-screen bg-background overflow-hidden " >
+      <Navbar />
+      <div className="flex h-screen bg-background overflow-hidden">
         {/* Sidebar */}
         <aside
           className={`
-          fixed inset-y-0 left-0 z-50 w-72 bg-card border-r transform transition-transform duration-300 ease-in-out
-          flex flex-col 
-         lg:translate-x-0 lg:static lg:inset-0 
-         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
+            fixed inset-y-0 left-0 z-50 w-72 bg-card border-r transform transition-transform duration-300 ease-in-out
+            flex flex-col 
+            lg:translate-x-0 lg:static lg:inset-0 
+            ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+          `}
         >
-
-
           {/* User Profile Section */}
           <ProfileBadge />
 
           {/* Navigation - Make this scrollable */}
-          <nav className=" overflow-y-auto p-4 space-y-6">
-            {navigationItems.map((section) => (
+          <nav className="flex-1 overflow-y-auto p-4 space-y-6">
+            {navItems.map((section) => (
               <div key={section.section}>
-                {section.title && (
-                  <div className="px-3 mb-3">
-                    <h1 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                      {section.title}
-                    </h1>
-                  </div>
-                )}
-                <div className="space-y-1">{section.items.map(renderSidebarItem)}</div>
+                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-3">
+                  {section.section}
+                </h3>
+                <div className="space-y-1">
+                  {section?.items?.map(renderSidebarItem)}
+                </div>
               </div>
             ))}
           </nav>
@@ -159,7 +124,6 @@ const DashboardLayout = () => {
           </div>
         </aside>
 
-
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Top Header */}
@@ -176,7 +140,7 @@ const DashboardLayout = () => {
 
               <div className="flex items-center gap-3">
                 <h2 className="text-xl font-semibold capitalize">
-                  {activeSection === 'dashboard' ? 'Overview' : activeSection}
+                  {activeSection === 'dashboard' ? 'Overview' : activeSection.replace('-', ' ')}
                 </h2>
                 <Badge variant="outline" className="text-xs">
                   Live
@@ -217,8 +181,7 @@ const DashboardLayout = () => {
           </header>
 
           {/* Main Content */}
-          <main className="flex-1 overflow-y-auto bg-muted/30">
-
+          <main className="flex-1 overflow-y-auto bg-muted/30 p-6">
             <Outlet />
           </main>
         </div>

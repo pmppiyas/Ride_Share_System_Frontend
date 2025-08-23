@@ -19,7 +19,7 @@ export default function RideCard({ ride }) {
   };
 
   return (
-    <div key={ride.id} className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
+    <div className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
       <div className="flex items-center gap-4">
         <div className={`w-3 h-3 rounded-full ${getStatusColor(ride.status)}`} />
         <div className="space-y-1">
@@ -30,8 +30,8 @@ export default function RideCard({ ride }) {
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <MapPin className="h-3 w-3" />
-            <span>{ride.pickupLocation.address
-            } → {ride.destinationLocation.address}</span>
+            <span>{ride?.pickupLocation?.address
+            } → {ride?.destinationLocation?.address}</span>
           </div>
         </div>
       </div>

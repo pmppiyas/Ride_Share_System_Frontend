@@ -1,13 +1,14 @@
 import App from "@/App";
 import Login from "@/components/modules/auth/Login";
 import Signup from "@/components/modules/auth/Signup";
-import DashboardHome from "@/components/modules/dashboard/DashboardHome";
-import Driver from "@/components/modules/dashboard/Driver";
-import Rider from "@/components/modules/dashboard/Riders";
-import Rides from "@/components/modules/dashboard/Rides";
 import DashboardLayout from "@/layouts/DashboardLayout";
+import { checkAuth } from "@/middleware/checkAuth";
 import Home from "@/pages/shared/Home";
 import Profile from "@/pages/shared/Profile";
+import { adminNavItems } from "@/routes/adminNavItems";
+import { driverNavItems } from "@/routes/driverNavItems";
+import { Role } from "@/types";
+import { generateRoutes } from "@/utils/generateRoutes";
 import { createBrowserRouter } from "react-router";
 
 export const router = createBrowserRouter([
@@ -20,40 +21,32 @@ export const router = createBrowserRouter([
         Component: Home,
       },
       {
-        path: "/auth/login",
+        path: "auth/login",
         Component: Login,
       },
       {
-        path: "/auth/signup",
+        path: "auth/signup",
         Component: Signup,
       },
       {
-        path: "/profile",
-        Component: Profile,
+        path: "profile",
+        Component: checkAuth(Profile, [
+          Role.SUPER_ADMIN,
+          Role.ADMIN,
+          Role.DRIVER,
+          Role.RIDER,
+        ]),
       },
     ],
   },
   {
     path: "/admin",
-    Component: DashboardLayout,
-
-    children: [
-      {
-        index: true,
-        Component: DashboardHome,
-      },
-      {
-        path: "drivers",
-        Component: Driver,
-      },
-      {
-        path: "riders",
-        Component: Rider,
-      },
-      {
-        path: "rides",
-        Component: Rides,
-      },
-    ],
+    Component: checkAuth(DashboardLayout, [Role.SUPER_ADMIN, Role.ADMIN]),
+    children: [...generateRoutes(adminNavItems)],
+  },
+  {
+    path: "/driver",
+    Component: checkAuth(DashboardLayout, [Role.DRIVER, Role.RIDER]),
+    children: [...generateRoutes(driverNavItems)],
   },
 ]);

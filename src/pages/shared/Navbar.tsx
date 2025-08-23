@@ -1,20 +1,11 @@
-import { Link } from "react-router"
-import { Book, Menu, Sunset, Trees, Zap } from "lucide-react";
-
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Link } from "react-router";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import {
   Sheet,
@@ -23,265 +14,133 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import Logo from '@/assets/icons/Logo';
-import { useAuth } from '@/hooks/useAuth';
+import Logo from "@/assets/icons/Logo";
+import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-
-interface MenuItem {
-  title: string;
-  url: string;
-  description?: string;
-  icon?: React.ReactNode;
-  items?: MenuItem[];
-}
+import { Role } from "@/types";
+import { getRolebasedLinks } from '@/utils/getRolebaseLinks';
 
 interface NavbarProps {
-  logo?: {
-    url: string;
-    src: string;
-    alt: string;
-    title: string;
-  };
-  menu?: MenuItem[];
   auth?: {
-    login: {
-      title: string;
-      url: string;
-    };
-    signup: {
-      title: string;
-      url: string;
-    };
+    login: { title: string; url: string };
+    signup: { title: string; url: string };
   };
 }
 
 const Navbar = ({
-
-
-  menu = [
-    { title: "Home", url: "/" },
-
-    {
-      title: "Dashboard",
-      url: "/admin",
-      items: [
-        {
-          title: "Dashboard",
-          description: "The latest industry news, updates, and info",
-          icon: <Book className="size-5 shrink-0" />,
-          url: "/admin",
-        },
-        {
-          title: "Rides",
-          description: "Our mission is to innovate and empower the world",
-          icon: <Trees className="size-5 shrink-0" />,
-          url: "/admin/rides",
-        },
-        {
-          title: "Drivers",
-          description: "Browse job listing and discover our workspace",
-          icon: <Sunset className="size-5 shrink-0" />,
-          url: "/admin/drivers",
-        },
-        {
-          title: "Riders",
-          description:
-            "Get in touch with our support team or visit our community forums",
-          icon: <Zap className="size-5 shrink-0" />,
-          url: "/admin/riders",
-        },
-      ],
-    },
-    {
-      title: "Resources",
-      url: "#",
-      items: [
-        {
-          title: "Help Center",
-          description: "Get all the answers you need right here",
-          icon: <Zap className="size-5 shrink-0" />,
-          url: "#",
-        },
-        {
-          title: "Contact Us",
-          description: "We are here to help you with any questions you have",
-          icon: <Sunset className="size-5 shrink-0" />,
-          url: "#",
-        },
-        {
-          title: "Status",
-          description: "Check the current status of our services and APIs",
-          icon: <Trees className="size-5 shrink-0" />,
-          url: "#",
-        },
-        {
-          title: "Terms of Service",
-          description: "Our terms and conditions for using our services",
-          icon: <Book className="size-5 shrink-0" />,
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Pricing",
-      url: "#",
-    },
-    {
-      title: "Blog",
-      url: "#",
-    },
-  ],
   auth = {
     login: { title: "Login", url: "/auth/login" },
     signup: { title: "Sign up", url: "/auth/signup" },
   },
 }: NavbarProps) => {
-  const { me, isError } = useAuth()
+  const { me, isError } = useAuth();
+
   if (isError) {
     toast.error("Failed to fetch user data. Please try again.");
   }
-  const user = me?.data;
 
+  const user = me?.data;
+  const role = user?.role || Role.RIDER;
+
+  ;
+
+  const navLinks = [
+    { title: "Home", url: "/" },
+    { title: "Dashboard", url: getRolebasedLinks(role) },
+    { title: "Resources", url: "/resources" },
+    { title: "Pricing", url: "/pricing" },
+    { title: "Blog", url: "/blog" },
+  ];
 
   return (
-    <section className="p-4   flex justify-center bg-primary/10 shadow-lg shadow-primary/20">
+    <section className="p-4 flex justify-center bg-primary/10 shadow-lg shadow-primary/20">
       <div className="container">
         {/* Desktop Menu */}
-        <nav className="hidden justify-between lg:flex">
+        <nav className="hidden lg:flex justify-between items-center">
+          {/* Left: Logo & Links */}
           <div className="flex items-center gap-6">
-            {/* Logo */}
             <Logo />
-            <div className="flex items-center ">
-              <NavigationMenu >
-                <NavigationMenuList>
-                  {menu.map((item) => renderMenuItem(item))}
-                </NavigationMenuList>
-              </NavigationMenu>
-            </div>
+            <NavigationMenu>
+              <NavigationMenuList>
+                {navLinks.map((item) => (
+                  <NavigationMenuItem key={item.title}>
+                    <NavigationMenuLink asChild>
+                      <Link
+                        to={item.url}
+                        className="bg-background hover:bg-muted hover:text-accent-foreground px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                      >
+                        {item.title}
+                      </Link>
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                ))}
+              </NavigationMenuList>
+            </NavigationMenu>
           </div>
+
+          {/* Right: Auth Buttons */}
           <div className="flex gap-2">
-            {user ?
-              <Button variant={"outline"}>
-                Logout
-              </Button>
-              :
-              <Button asChild size="sm">
-                <Link to={auth.signup.url}>{auth.signup.title}</Link>
-              </Button>}
+            {user ? (
+              <Button variant="outline">Logout</Button>
+            ) : (
+              <>
+                <Button asChild variant="outline" size="sm">
+                  <Link to={auth.login.url}>{auth.login.title}</Link>
+                </Button>
+                <Button asChild size="sm">
+                  <Link to={auth.signup.url}>{auth.signup.title}</Link>
+                </Button>
+              </>
+            )}
           </div>
         </nav>
 
         {/* Mobile Menu */}
-        <div className="block lg:hidden">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <Logo />
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <Menu className="size-4" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent className="overflow-y-auto">
-                <SheetHeader>
-                  <SheetTitle>
-                    <Logo />
-                  </SheetTitle>
-                </SheetHeader>
-                <div className="flex flex-col gap-6 p-4">
-                  <Accordion
-                    type="single"
-                    collapsible
-                    className="flex w-full flex-col gap-4"
+        <div className="lg:hidden flex items-center justify-between">
+          <Logo />
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon">
+                <Menu className="size-4" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="p-4">
+              <SheetHeader>
+                <SheetTitle>
+                  <Logo />
+                </SheetTitle>
+              </SheetHeader>
+              <div className="flex flex-col gap-4 mt-6">
+                {navLinks.map((item) => (
+                  <Link
+                    key={item.title}
+                    to={item.url}
+                    className="text-md font-semibold hover:text-primary transition-colors"
                   >
-                    {menu.map((item) => renderMobileMenuItem(item))}
-                  </Accordion>
+                    {item.title}
+                  </Link>
+                ))}
 
-                  <div className="flex flex-col gap-3">
-                    <Button asChild variant="outline" size="sm">
-                      <Link to={auth.login.url}>{auth.login.title}</Link>
-                    </Button>
-                    <Button asChild size="sm">
-                      <Link to={auth.signup.url}>{auth.signup.title}</Link>
-                    </Button>
-                  </div>
+                <div className="flex flex-col gap-3 mt-4">
+                  {user ? (
+                    <Button variant="outline">Logout</Button>
+                  ) : (
+                    <>
+                      <Button asChild variant="outline" size="sm">
+                        <Link to={auth.login.url}>{auth.login.title}</Link>
+                      </Button>
+                      <Button asChild size="sm">
+                        <Link to={auth.signup.url}>{auth.signup.title}</Link>
+                      </Button>
+                    </>
+                  )}
                 </div>
-              </SheetContent>
-            </Sheet>
-          </div>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </section>
-  );
-};
-
-const renderMenuItem = (item: MenuItem) => {
-  if (item.items) {
-    return (
-      <NavigationMenuItem key={item.title}>
-        <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
-        <NavigationMenuContent className="bg-popover text-popover-foreground min-w-max z-100">
-          {item.items.map((subItem) => (
-            <NavigationMenuLink asChild key={subItem.title} className="w-80">
-              <SubMenuLink item={subItem} />
-            </NavigationMenuLink>
-          ))}
-        </NavigationMenuContent>
-      </NavigationMenuItem>
-    );
-  }
-
-  return (
-    <NavigationMenuItem key={item.title}>
-      <NavigationMenuLink
-        href={item.url}
-        className="bg-background hover:bg-muted hover:text-accent-foreground group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
-      >
-        {item.title}
-      </NavigationMenuLink>
-    </NavigationMenuItem>
-  );
-};
-
-const renderMobileMenuItem = (item: MenuItem) => {
-  if (item.items) {
-    return (
-      <AccordionItem key={item.title} value={item.title} className="border-b-0">
-        <AccordionTrigger className="text-md py-0 font-semibold hover:no-underline">
-          {item.title}
-        </AccordionTrigger>
-        <AccordionContent className="mt-2">
-          {item.items.map((subItem) => (
-            <SubMenuLink key={subItem.title} item={subItem} />
-          ))}
-        </AccordionContent>
-      </AccordionItem>
-    );
-  }
-
-  return (
-    <a key={item.title} href={item.url} className="text-md font-semibold">
-      {item.title}
-    </a>
-  );
-};
-
-const SubMenuLink = ({ item }: { item: MenuItem }) => {
-  return (
-    <Link to={item.url}
-      className="hover:bg-muted hover:text-accent-foreground flex select-none flex-row gap-4 rounded-md p-3 leading-none no-underline outline-none transition-colors"
-      data-slot="navigation-menu-link"
-    >
-      <div className="text-foreground">{item.icon}</div>
-      <div>
-        <div className="text-sm font-semibold">{item.title}</div>
-        {item.description && (
-          <p className="text-muted-foreground text-sm leading-snug">
-            {item.description}
-          </p>
-        )}
-      </div>
-    </Link>
   );
 };
 

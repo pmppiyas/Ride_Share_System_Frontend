@@ -1,11 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from '@/components/ui/card';
 import { DollarSign, Navigation, Star, TrendingUp, UserCheck, Clock, Activity } from "lucide-react"
 import { Button } from '@/components/ui/button';
 import { AreaChart, Area, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import RideCard from '@/components/modules/dashboard/RideCard';
+import { useGetRidesQuery } from '@/redux/features/ride/ride.api';
+import { useNavigate } from "react-router"
 
 export default function DashboardHome() {
-  // Sample data
+  const navigate = useNavigate();
+  const { data, isLoading, isError } = useGetRidesQuery({
+    limit: "3",
+  });
+
+  if (isLoading) return <div className="p-6">Loading rides...</div>;
+  if (isError) return <div className="p-6 text-red-500">Failed to load rides.</div>;
 
 
   const rideStatusData = [
@@ -15,41 +24,7 @@ export default function DashboardHome() {
     { name: 'Pending', value: 8, color: '#8b5cf6' }
   ];
 
-  const recentRides = [
-    {
-      id: '1',
-      rider: 'Alice Johnson',
-      driver: 'John Smith',
-      pickup: 'Downtown Mall',
-      destination: 'Airport',
-      fare: 245,
-      status: 'completed',
-      rating: 5,
-      time: '2 hours ago'
-    },
-    {
-      id: '2',
-      rider: 'Bob Wilson',
-      driver: 'Sarah Davis',
-      pickup: 'City Center',
-      destination: 'University',
-      fare: 180,
-      status: 'in-progress',
-      rating: null,
-      time: '15 minutes ago'
-    },
-    {
-      id: '3',
-      rider: 'Carol Brown',
-      driver: 'Mike Johnson',
-      pickup: 'Hotel Plaza',
-      destination: 'Station',
-      fare: 120,
-      status: 'completed',
-      rating: 4,
-      time: '1 hour ago'
-    }
-  ];
+
 
   const revenueData = [
     { name: 'Mon', revenue: 4500, rides: 45 },
@@ -213,15 +188,15 @@ export default function DashboardHome() {
               </CardTitle>
               <CardDescription>Latest ride requests and completions</CardDescription>
             </div>
-            <Button variant="outline" size="sm">
+            <Button onClick={() => navigate("/admin/rides")} variant="outline" size="sm">
               View All
             </Button>
           </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {recentRides.map((ride) => (
-              <RideCard ride={ride} />
+            {data.rides.map((ride: any) => (
+              <RideCard key={ride._id} ride={ride} />
             ))}
           </div>
         </CardContent>

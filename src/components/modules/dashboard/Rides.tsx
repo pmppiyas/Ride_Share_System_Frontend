@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import TourPagination from "@/components/modules/shared/TourPagination";
 import { useGetRidesQuery } from '@/redux/features/ride/ride.api';
@@ -13,22 +13,21 @@ export default function Rides() {
   });
 
 
-
   if (isLoading) return <div className="p-6">Loading rides...</div>;
   if (isError) return <div className="p-6 text-red-500">Failed to load rides.</div>;
-  console.log(data.users);
+
   return (
     <div className="p-6">
       <h2 className="text-xl font-bold mb-4 text-primary">All Rides</h2>
 
       <div className="space-y-4">
-        {data.users?.map((ride: any) => (
-          <RideCard ride={ride} />
+        {data.rides?.map((ride: any) => (
+          <RideCard key={ride._id} ride={ride} />
         ))}
       </div>
 
       {/* Pagination */}
-      {data.users.length > 0 ? (
+      {data?.rides?.length > 0 ? (
         <TourPagination
           page={data?.meta?.page}
           totalPage={data?.meta?.totalPage}
