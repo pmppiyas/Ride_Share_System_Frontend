@@ -1,5 +1,6 @@
 import { adminNavItems } from "@/routes/adminNavItems";
 import { driverNavItems } from "@/routes/driverNavItems";
+import { riderNavItems } from "@/routes/riderNavItems";
 import { Role, type TRole } from "@/types";
 
 export const getNavItems = (role: TRole) => {
@@ -8,8 +9,9 @@ export const getNavItems = (role: TRole) => {
     case Role.ADMIN:
       return adminNavItems;
     case Role.DRIVER:
-    case Role.RIDER:
       return driverNavItems;
+    case Role.RIDER:
+      return riderNavItems;
     default:
       return [];
   }

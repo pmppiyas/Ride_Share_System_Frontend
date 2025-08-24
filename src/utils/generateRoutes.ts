@@ -9,6 +9,7 @@ export const generateRoutes = (sidebarItems: ISidebarItem[]) => {
           Component: route.component,
         };
       }
+
       return {
         path: route.path,
         Component: route.component,
