@@ -20,6 +20,9 @@ export interface Driver {
     providerId: string;
   }[];
 
+  earnings: number;
+
+  approvalStatus: "approved" | "pending";
   rideHistory: [];
   isAvailable: boolean;
   isActive: "ACTIVE" | "INACTIVE";

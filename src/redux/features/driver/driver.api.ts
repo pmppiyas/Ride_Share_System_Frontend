@@ -8,6 +8,7 @@ export const authApi = baseApi.injectEndpoints({
         method: "POST",
         data: userInfo,
       }),
+      invalidatesTags: ["DRIVER"],
     }),
     getDriverRequest: builder.query({
       query: (params) => {
@@ -17,6 +18,7 @@ export const authApi = baseApi.injectEndpoints({
           method: "GET",
         };
       },
+      providesTags: ["DRIVER"],
       transformResponse: (res) => res.data,
     }),
     driverReqHandle: builder.mutation({
@@ -25,6 +27,7 @@ export const authApi = baseApi.injectEndpoints({
         method: "PATCH",
         data: { status },
       }),
+      invalidatesTags: ["DRIVER"],
     }),
 
     getDrivers: builder.query({
@@ -35,6 +38,7 @@ export const authApi = baseApi.injectEndpoints({
           method: "GET",
         };
       },
+      providesTags: ["DRIVER"],
       transformResponse: (res) => res.data,
     }),
 
@@ -43,12 +47,16 @@ export const authApi = baseApi.injectEndpoints({
         url: "/driver/earnings",
         method: "GET",
       }),
+      providesTags: ["DRIVER"],
     }),
+
     getRideHistory: builder.query({
       query: () => ({
         url: "/driver/ride-history",
         method: "GET",
       }),
+      providesTags: ["DRIVER"],
+      transformResponse: (res) => res.data,
     }),
   }),
 });

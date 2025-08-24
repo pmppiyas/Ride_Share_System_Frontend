@@ -68,7 +68,7 @@ export function DriverRegistrationModal({
 
 
   const submitHandler = (data: DriverExtensionFormData) => {
-    // console.log('✅ Submitted Driver Data:', data);
+
     onSubmit(data);
   };
 

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,6 +9,7 @@ import {
 import TourPagination from "@/components/modules/shared/TourPagination";
 import DriverRequestAction from '@/components/modules/shared/DriverRequestAction';
 import { toast } from "sonner";
+import type { Driver } from '@/types';
 
 
 const Driver = () => {
@@ -42,11 +44,12 @@ const Driver = () => {
       await handleRequest({
         id: selectedDriver._id,
         status: actionType,
-      });
+      }).unwrap();
       toast.success(`${selectedDriver.name} has been ${actionType === "approved" ? "approved" : "refused"} successfully.`);
 
       setModalOpen(false);
     } catch (err) {
+      console.log(err)
       toast.error("Failed to process the request. Please try again.");
     }
   };
@@ -112,7 +115,7 @@ const Driver = () => {
           </h2>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {requests.users.map((driver: any) => (
+          {requests.users.map((driver: Driver) => (
             <div
               key={driver._id}
               className="border rounded-xl shadow p-4 bg-white hover:shadow-lg transition"
@@ -120,15 +123,18 @@ const Driver = () => {
               <h3 className="text-lg font-semibold mb-1">{driver.name}</h3>
               <p className="text-sm text-gray-600 mb-1"><strong>Email:</strong> {driver.email}</p>
               <p className="text-sm text-gray-600 mb-1"><strong>Phone:</strong> {driver.phone}</p>
-              <p className="text-sm text-gray-600 mb-1"><strong>License:</strong> {driver.licenseNumber}</p>
-              <p className="text-sm text-gray-600 mb-1"><strong>Status:</strong> {driver.rideStatus}</p>
-              <p className="text-sm text-gray-600 mb-1"><strong>Earnings:</strong> ${driver.earnings}</p>
+              <p className="text-sm text-gray-600 mb-1"><strong>License:</strong> <span className='uppercase'>{driver.vehicleInfo.type}</span></p>
+              <p className="text-sm text-gray-600 mb-1"><strong>License:</strong> {driver.vehicleInfo.plateNumber}</p>
+              <p className="text-sm text-gray-600 mb-1"><strong>Status:</strong> {driver.isActive}</p>
               <p className="text-sm text-gray-600 mb-1"><strong>Approval:</strong> {driver.approvalStatus}</p>
-              <p className="text-sm text-gray-600 mb-1"><strong>Available:</strong> {driver.isAvailable ? "Yes" : "No"}</p>
               <p className="text-sm text-gray-600"><strong>Created:</strong> {new Date(driver.createdAt).toLocaleDateString()}</p>
               <div className="mt-4 flex justify-between">
-                <Button variant="outline" onClick={() => openModal(driver, "refuse")}>Cancel</Button>
-                <Button className="ml-2" onClick={() => openModal(driver, "approved")}>Accept</Button>
+                <Button onClick={() => {
+                  openModal(driver, "refuse");
+                }} variant="outline">Reject</Button>
+                <Button onClick={() => {
+                  openModal(driver, "approved");
+                }} className="ml-2">Approve</Button>
               </div>
             </div>
           ))}
