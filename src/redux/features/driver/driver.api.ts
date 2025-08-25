@@ -8,7 +8,7 @@ export const authApi = baseApi.injectEndpoints({
         method: "POST",
         data: userInfo,
       }),
-      invalidatesTags: ["DRIVER"],
+      invalidatesTags: ["DRIVER", "AUTH"],
     }),
     getDriverRequest: builder.query({
       query: (params) => {

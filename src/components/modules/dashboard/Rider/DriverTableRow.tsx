@@ -70,6 +70,7 @@ const DriverTableRow: React.FC<DriverTableRowProps> = ({
             {driver.distance.toFixed(1)} km
           </div>
         )}
+
       </td>
 
       {/* Action */}

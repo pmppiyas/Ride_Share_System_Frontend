@@ -16,6 +16,7 @@ import FindError from '@/components/modules/dashboard/Rider/FindError';
 import GettingStarted from '@/components/modules/dashboard/Rider/GettingStarted';
 import { RiderActionButton } from '@/components/modules/dashboard/Rider/RiderActionButton';
 import RiderHeader from '@/components/modules/dashboard/Rider/RiderHeader';
+import { RideAssignModal } from '@/components/modules/dashboard/Rider/RideAssignModal';
 
 
 const FindDriverMap: React.FC = () => {
@@ -23,7 +24,8 @@ const FindDriverMap: React.FC = () => {
   const [destinationLocation, setDestinationLocation] = useState<LocationCoords | null>(null);
   const [selecting, setSelecting] = useState<SelectingMode>("pickup");
   const [availableDrivers, setAvailableDrivers] = useState<Driver[]>([]);
-
+  const [assignDriver, setAssignDriver] = useState({});
+  const [openModal, setOpenModal] = useState(false);
   const [findDriver, { isLoading }] = useFindDriverMutation();
   const {
     data: driversData,
@@ -31,7 +33,6 @@ const FindDriverMap: React.FC = () => {
     error: dError,
     refetch: refetchDrivers
   } = useGetDriversQuery(undefined) as DriverQueryResult;
-
 
 
   const allDrivers = useMemo(() => {
@@ -70,7 +71,7 @@ const FindDriverMap: React.FC = () => {
         response?.data?.drivers ||
         [];
 
-      // Calculate distances for found drivers
+
       if (foundDrivers.length > 0) {
         const driversWithDistance = foundDrivers.map((driver: Driver) => {
           let distance = 0;
@@ -88,7 +89,6 @@ const FindDriverMap: React.FC = () => {
 
           return { ...driver, distance };
         });
-        console.log(driversWithDistance)
 
         setAvailableDrivers(driversWithDistance);
         toast.success(`Found ${foundDrivers.length} nearby driver(s)!`);
@@ -123,24 +123,18 @@ const FindDriverMap: React.FC = () => {
   }, [selecting]);
 
   const handleDriverClick = useCallback((driver: Driver): void => {
-    console.log(driver)
-
-    toast.info(`🚗 Driver: ${driver.name || "Unknown"} clicked! Check console for details.`);
+    setAssignDriver(driver);
+    setOpenModal(true);
   }, []);
 
   const handleAssignDriver = useCallback((driver: Driver): void => {
     console.log(driver, pickupLocation, destinationLocation)
-    toast.success(
-      `✅ Driver ${driver.name || "Unknown"} assigned successfully!`,
-      {
-        description: `Phone: ${driver.phone || "N/A"} | Vehicle: ${driver.vehicleInfo?.type || "N/A"}`
-      }
-    );
+    setAssignDriver(driver);
+    setOpenModal(true);
   }, [pickupLocation, destinationLocation]);
 
   const handleViewDriverDetails = useCallback((driver: Driver): void => {
     handleDriverClick(driver);
-    console.log()
   }, [handleDriverClick]);
 
   const handleReset = useCallback((): void => {
@@ -237,6 +231,12 @@ const FindDriverMap: React.FC = () => {
         )}
 
       </CardContent>
+      {assignDriver && openModal &&
+        <RideAssignModal isOpen={openModal}
+          onClose={() => setOpenModal(false)}
+          driver={assignDriver}
+          location={{ pickupLocation, destinationLocation }}
+        ></RideAssignModal>}
     </Card >
   );
 };

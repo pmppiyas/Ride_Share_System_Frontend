@@ -1,8 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Star } from "lucide-react"
 
 export default function RideCard({ ride }) {
 
+
+  const handleRideClick = (ride: any) => {
+    console.log(ride)
+  }
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -13,14 +18,13 @@ export default function RideCard({ ride }) {
       default: return 'bg-gray-500';
     }
   };
-
   const getStatusText = (status: string) => {
     return status.charAt(0).toUpperCase() + status.slice(1).replace('-', ' ');
   };
 
   return (
-    <div className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
-      <div className="flex items-center gap-4">
+    <div onClick={() => handleRideClick(ride)} className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
+      <div onClick={() => handleRideClick(ride)} className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
         <div className={`w-3 h-3 rounded-full ${getStatusColor(ride.status)}`} />
         <div className="space-y-1">
           <div className="flex items-center gap-2">

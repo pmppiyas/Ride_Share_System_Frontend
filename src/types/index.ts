@@ -15,6 +15,8 @@ export type {
   GetDriversApiResponse,
 } from "./driver.types";
 
+export type { Ride, RideCardProps, IRideStatus } from "./ride.types";
+
 export interface IError {
   status: number;
   data: {

@@ -1,8 +1,9 @@
-import { Home, Settings, UserRoundSearch } from "lucide-react";
+import { Home, Settings, UserRoundSearch, Car } from "lucide-react";
 import type { ISidebarItem } from "@/types";
 import Setting from "@/components/modules/dashboard/Setting";
 import RHome from "@/components/modules/dashboard/Rider/Home";
 import FindADriver from "@/components/modules/dashboard/Rider/FindADriver";
+import MyRide from "@/components/modules/dashboard/Rider/MyRide";
 
 export const riderNavItems: ISidebarItem[] = [
   {
@@ -21,6 +22,13 @@ export const riderNavItems: ISidebarItem[] = [
         path: "find_driver",
         icon: UserRoundSearch,
         component: FindADriver,
+      },
+      {
+        id: "MyRides",
+        label: "My Ride",
+        path: "my_rides",
+        icon: Car,
+        component: MyRide,
       },
     ],
   },

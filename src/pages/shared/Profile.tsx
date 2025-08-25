@@ -1,11 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Pencil, CarFront, CheckLine } from 'lucide-react';
+import { Link } from "react-router";
 import { DriverRegistrationModal } from '@/components/modules/shared/DriverRequestModal';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import { useDriverRegisterMutation } from '@/redux/features/driver/driver.api';
-import type { IError } from '@/types';
+import { Role, type IError } from '@/types';
+import { useGetMyRidesQuery } from '@/redux/features/ride/ride.api';
+import RideCard from '@/components/modules/dashboard/admin/RideCard';
 
 
 
@@ -18,11 +22,18 @@ export default function Profile() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [driverRegister] = useDriverRegisterMutation(undefined)
-  const requested = user.approvalStatus === 'pending';
-  const approved = user.approvalStatus === 'approved';
-  console.log(approved)
+
+  const { data, isLoading: RLoading } = useGetMyRidesQuery({
+    limit: "3",
+  })
+
+  if (RLoading) {
+    return <h2>Loading</h2>
+  }
+  const Rides = data.rides;
+
   const handleDriverSubmit = async (data: any) => {
-    console.log('🚗 Driver Registered:', data);
+
     try {
       await driverRegister(data).unwrap();
       toast.success('Driver registration successful! 🎉');
@@ -36,10 +47,12 @@ export default function Profile() {
       toast.error('Failed to register driver. Please try again.');
       return;
     }
-    toast.success('Driver registered successfully! 🎉');
     setIsModalOpen(false);
 
   };
+
+  const requested = user.approvalStatus === 'pending';
+  const approved = user.approvalStatus === 'approved' && user.role === Role.DRIVER;
 
   return (
     <div className="max-w-2xl mx-auto py-10 px-4">
@@ -82,14 +95,21 @@ export default function Profile() {
 
 
           {
-            requested && <Button
+            requested ? <Button
               onClick={() => toast.success('Your driver request is still pending.')}
               className="flex items-center gap-2"
             >
               <CarFront className="h-4 w-4" />
               Driver Request Pending
+            </Button> : <Button
+              onClick={() => setIsModalOpen(true)}
+              className="flex items-center gap-2"
+            >
+              <CarFront className="h-4 w-4" />
+              Be a Driver
             </Button>
           }
+
           {
             approved && <Button
               onClick={() => toast.success('Your are a verified driver.')}
@@ -99,13 +119,7 @@ export default function Profile() {
               Verified Driver
             </Button>
           }
-          {user.role === "rider" && <Button
-            onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2"
-          >
-            <CarFront className="h-4 w-4" />
-            Be a Driver
-          </Button>}
+
           <Button className="flex items-center gap-2">
             <Pencil className="h-4 w-4" />
             Edit
@@ -114,34 +128,26 @@ export default function Profile() {
       </div>
 
       {/* Ride History */}
-      <div className="mt-10">
-        <h3 className="text-lg font-semibold mb-4 text-center">My Rides</h3>
-        <div className="bg-white shadow-md rounded-lg p-4 space-y-4">
-          <div className="border-b pb-2">
-            <p className="text-gray-800">Ride from A to B</p>
-            <p className="text-gray-500 text-sm">Date: 2023-10-01</p>
-          </div>
-          <div className="border-b pb-2">
-            <p className="text-gray-800">Ride from C to D</p>
-            <p className="text-gray-500 text-sm">Date: 2023-11-12</p>
-          </div>
-          <div>
-            <p className="text-gray-800">Ride from E to F</p>
-            <p className="text-gray-500 text-sm">Date: 2024-01-05</p>
-          </div>
-        </div>
+      <div className="mt-10 flex flex-col">
+        {Rides ? <div> {Rides.map((ride: any) => <RideCard key={ride._id} ride={ride} />)}</div> :
+          (<Button className='w-1/3 mx-auto'>
+            <Link to={"/rider/find_driver"}>Make A Ride</Link>
+          </Button>)}
       </div>
 
-      {/* Driver Registration Modal */}
-      {isModalOpen && <DriverRegistrationModal
-        open={isModalOpen}
 
-        onClose={() => {
-          setIsModalOpen(false)
-        }}
-        onSubmit={handleDriverSubmit}
-        isLoading={false}
-      />}
-    </div>
+      {/* Driver Registration Modal */}
+      {
+        isModalOpen && <DriverRegistrationModal
+          open={isModalOpen}
+
+          onClose={() => {
+            setIsModalOpen(false)
+          }}
+          onSubmit={handleDriverSubmit}
+          isLoading={false}
+        />
+      }
+    </div >
   );
 }
