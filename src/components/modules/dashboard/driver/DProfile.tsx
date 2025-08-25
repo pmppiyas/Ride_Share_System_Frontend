@@ -11,7 +11,8 @@ import { Role, type IError } from '@/types';
 import { useGetMyRidesQuery } from '@/redux/features/ride/ride.api';
 import RideCard from '@/components/modules/dashboard/admin/RideCard';
 
-export default function Profile() {
+
+export default function DProfile() {
   const { me, isError } = useAuth();
   const user = me?.data;
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,6 +20,7 @@ export default function Profile() {
   const { data, isLoading: RLoading } = useGetMyRidesQuery({ limit: "3" });
 
   if (isError) toast.error("Failed to fetch user data. Please try again.");
+
   if (RLoading) return <h2 className="text-center mt-6">Loading...</h2>;
 
   const Rides = data?.rides || [];
@@ -51,6 +53,10 @@ export default function Profile() {
 
   const requested = user?.approvalStatus === 'pending';
   const approved = user?.approvalStatus === 'approved' && user?.role === Role.DRIVER;
+
+
+
+
 
   return (
     <div className="">

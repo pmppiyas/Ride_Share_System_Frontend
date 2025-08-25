@@ -1,6 +1,7 @@
-import { Home, Settings } from "lucide-react";
-import Setting from "@/components/modules/dashboard/Setting";
+import { Home, Settings, UserRound } from "lucide-react";
 import DHome from "@/components/modules/dashboard/driver/Home";
+import DProfile from "@/components/modules/dashboard/driver/DProfile";
+import DSetting from "@/components/modules/dashboard/driver/DSetting";
 
 export const driverNavItems = [
   {
@@ -19,11 +20,18 @@ export const driverNavItems = [
     section: "Settings",
     items: [
       {
+        id: "profile",
+        label: "Profile",
+        path: "profile",
+        icon: UserRound,
+        component: DProfile,
+      },
+      {
         id: "settings",
         label: "Settings",
         path: "settings",
         icon: Settings,
-        component: Setting,
+        component: DSetting,
       },
     ],
   },

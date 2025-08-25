@@ -12,7 +12,7 @@ interface DriverModalProps {
 
 
 export const RideAssignModal: React.FC<DriverModalProps> = ({ isOpen, onClose, driver, location }) => {
-  const [rideRequest, { isLoading, isError }] = useRideRequestMutation();
+  const [rideRequest, { isLoading }] = useRideRequestMutation();
   if (!isOpen || !driver) return null;
 
 

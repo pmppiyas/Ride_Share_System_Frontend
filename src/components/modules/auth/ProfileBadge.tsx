@@ -6,7 +6,7 @@ import {
   ChevronDown, Settings, Bell
 } from "lucide-react";
 import { Progress } from '@/components/ui/progress';
-import { useNavigate } from "react-router";
+import { useNavigate, Link } from "react-router";
 
 import { toast } from "sonner";
 import { useLogoutMutation } from '@/redux/features/auth/auth.api';
@@ -51,9 +51,9 @@ export default function ProfileBadge({ me }) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem onClick={() => navigate("/profile")}>
-              <Settings className="mr-2 h-4 w-4" />
-              Profile Settings
+            <DropdownMenuItem >
+              <Link to={"/driver/profile"}><Settings className="mr-2 h-4 w-4" />
+                Profile Settings</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Bell className="mr-2 h-4 w-4" />
@@ -74,6 +74,6 @@ export default function ProfileBadge({ me }) {
         </div>
         <Progress value={98} className="h-1" />
       </div>
-    </div>
+    </div >
   )
 }

@@ -1,36 +1,36 @@
+import { useState } from 'react';
 import RideCard from '@/components/modules/dashboard/ride/RideCard';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { useGetMyRidesQuery, useSetRideStatusMutation } from '@/redux/features/ride/ride.api';
 import { type IError, type Ride } from '@/types';
 import { toast } from "sonner";
+
 export default function MyRides() {
   const { data } = useGetMyRidesQuery(undefined);
-
-
   const [setRide] = useSetRideStatusMutation();
+  const [confirmId, setConfirmId] = useState<string | null>(null);
 
-  const handleCancel = async (id: string) => {
+  const confirmCancel = async () => {
+    if (!confirmId) return;
+
     try {
-      await setRide({ id, status: "canceled" }).unwrap()
-
+      await setRide({ id: confirmId, status: "canceled" }).unwrap();
+      toast.success("Ride canceled successfully.");
+      setConfirmId(null);
     } catch (err) {
       const error = err as IError;
       if (error.status === 400) {
-        toast.error("This ride is already canceled.")
+        toast.error("This ride is already canceled.");
+      } else {
+        toast.error("Ride cancel failed.");
       }
-      else {
-        toast.error("Ride cancel failed.")
-      }
-      console.log(err)
+      console.log(err);
     }
   };
 
-
-
-
   if (!data || data.rides.length === 0) {
     return (
-      <div className="container mx-auto ">
+      <div className="container mx-auto">
         <Card>
           <CardContent className="p-6 text-center text-muted-foreground">
             No rides found
@@ -68,7 +68,11 @@ export default function MyRides() {
               </thead>
               <tbody>
                 {data.rides.map((ride: Ride) => (
-                  <RideCard key={ride._id} ride={ride} onCancel={() => handleCancel(ride._id)} />
+                  <RideCard
+                    key={ride._id}
+                    ride={ride}
+                    onCancel={() => setConfirmId(ride._id)}
+                  />
                 ))}
               </tbody>
             </table>
@@ -78,6 +82,32 @@ export default function MyRides() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Confirmation Modal */}
+      {confirmId && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-[90%] max-w-sm">
+            <h2 className="text-lg font-semibold mb-4">Confirm Cancellation</h2>
+            <p className="text-sm text-muted-foreground mb-6">
+              Are you sure you want to cancel this ride?
+            </p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => setConfirmId(null)}
+                className="px-4 py-2 text-sm rounded bg-muted hover:bg-muted/80"
+              >
+                No, go back
+              </button>
+              <button
+                onClick={confirmCancel}
+                className="px-4 py-2 text-sm rounded bg-red-600 text-white hover:bg-red-700"
+              >
+                Yes, cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

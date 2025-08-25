@@ -29,15 +29,6 @@ export const router = createBrowserRouter([
         path: "auth/signup",
         Component: Signup,
       },
-      {
-        path: "profile",
-        Component: checkAuth(Profile, [
-          Role.SUPER_ADMIN,
-          Role.ADMIN,
-          Role.DRIVER,
-          Role.RIDER,
-        ]),
-      },
     ],
   },
   {

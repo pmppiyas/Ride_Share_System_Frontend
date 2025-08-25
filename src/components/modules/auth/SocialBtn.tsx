@@ -1,19 +1,32 @@
 import { Button } from "@/components/ui/button";
-import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { FaFacebook } from "react-icons/fa";
+import { envVars } from '@/config/env';
 
 export default function SocialLoginButtons() {
+
+  const handleGoogleLogin = () => {
+    const redirectPath = "/";
+    const json = false;
+
+    const query = new URLSearchParams({
+      redirect: redirectPath,
+      json: json.toString(),
+    });
+
+    window.location.href = `${envVars.VITE_BACKEND_URL}/auth/google?${query.toString()}`;
+  };
+
   return (
     <div className="space-y-2">
       <Button
         variant="outline"
         className="w-full flex items-center gap-2 justify-center"
-        onClick={() => console.log("Google login")}
+        onClick={handleGoogleLogin}
       >
-        <FcGoogle size={20} />
         Continue with Google
       </Button>
+
 
       <Button
         variant="outline"
