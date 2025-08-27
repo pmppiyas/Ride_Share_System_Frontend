@@ -2,9 +2,8 @@ import React, { useState, useCallback, useMemo } from "react";
 import { toast } from "sonner";
 import { useFindDriverMutation } from "@/redux/features/rider/rider.api";
 import { useGetDriversQuery } from "@/redux/features/driver/driver.api";
-import type { Driver, DriverQueryResult, FindDriverApiResponse, FindDriverPayload, GetDriversApiResponse, IError, SelectingMode } from "@/types";
+import type { Driver, DriverQueryResult, FindDriverApiResponse, FindDriverPayload, GetDriversApiResponse, IError, LocationCoords, SelectingMode } from "@/types";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import type { LocationCoords } from '@/components/modules/dashboard/Rider/MapComponent';
 import MapComponent from '@/components/modules/dashboard/Rider/MapComponent';
 import NotFound from '@/components/modules/dashboard/Rider/NotFound';
 import Loading from '@/components/modules/dashboard/Rider/Loading';
@@ -13,10 +12,9 @@ import { LocationDisplay } from '@/components/modules/dashboard/Rider/LoactionDi
 import { AvailableDriversPanel } from '@/components/modules/dashboard/Rider/AvaiableDriverTable';
 import { calculateDistance } from '@/utils/calculateDistance';
 import FindError from '@/components/modules/dashboard/Rider/FindError';
-import GettingStarted from '@/components/modules/dashboard/Rider/GettingStarted';
-import { RiderActionButton } from '@/components/modules/dashboard/Rider/RiderActionButton';
 import RiderHeader from '@/components/modules/dashboard/Rider/RiderHeader';
 import { RideAssignModal } from '@/components/modules/dashboard/Rider/RideAssignModal';
+import { RiderActionButton } from '@/components/modules/dashboard/Rider/RiderActionButton';
 
 
 const FindDriverMap: React.FC = () => {
@@ -154,12 +152,12 @@ const FindDriverMap: React.FC = () => {
 
 
   if (dLoading) {
-    return <Loading />
+    return <Loading title='Drivers' />
   }
 
 
   return (
-    <Card className="w-full max-w-6xl mx-auto shadow-xl border-0">
+    <Card className="w-full max-w-6xl mx-auto shadow-xl border-0 ">
       <CardHeader className="bg-gradient-to-r from-primary/100 to-primary/60 text-white rounded-lg py-4">
         <RiderHeader handleRefreshDrivers={handleRefreshDrivers} />
       </CardHeader>
@@ -193,7 +191,8 @@ const FindDriverMap: React.FC = () => {
 
           </>
         ) : (
-          <>
+          <div className={"relative rounded-lg overflow-hidden border "}>
+
             {/* Map Section */}
             <MapComponent
               center={[23.8103, 90.4125]}
@@ -205,9 +204,9 @@ const FindDriverMap: React.FC = () => {
               nearbyDrivers={availableDrivers}
               onLocationSelect={handleLocationSelect}
               onDriverClick={handleDriverClick}
-              className="shadow-lg"
+              className="shadow-lg z-40"
             />
-          </>
+          </div>
         )}
 
         {/* No Drivers Found Message */}
@@ -220,10 +219,7 @@ const FindDriverMap: React.FC = () => {
 
         )}
 
-        {/* Getting Started Message */}
-        {!pickupLocation && !destinationLocation && (
-          <GettingStarted setSelecting={setSelecting} />
-        )}
+
 
         {/* Error Messages */}
         {dError && (
@@ -235,7 +231,14 @@ const FindDriverMap: React.FC = () => {
         <RideAssignModal isOpen={openModal}
           onClose={() => setOpenModal(false)}
           driver={assignDriver}
-          location={{ pickupLocation, destinationLocation }}
+          location={{
+            pickupLocation: pickupLocation
+              ? { ...pickupLocation, address: "Pickup Location" }
+              : { lat: 0, lng: 0, address: "Pickup Location" },
+            destinationLocation: destinationLocation
+              ? { ...destinationLocation, address: "Destination Location" }
+              : { lat: 0, lng: 0, address: "Destination Location" }
+          }}
         ></RideAssignModal>}
     </Card >
   );

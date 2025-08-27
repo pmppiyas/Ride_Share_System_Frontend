@@ -43,8 +43,8 @@ const Navbar = ({
 
   const navLinks = [
     { title: "Home", url: "/" },
+    { title: "Get Ride", url: "/rider/find_driver" },
     { title: "Dashboard", url: getRolebasedLinks(role) },
-    { title: "Resources", url: "/resources" },
     { title: "Pricing", url: "/pricing" },
     { title: "Blog", url: "/blog" },
   ];
@@ -67,13 +67,18 @@ const Navbar = ({
 
 
   return (
-    <section className="p-4 flex justify-center bg-primary/10 shadow-lg shadow-primary/20">
+    <section className="p-4 flex justify-center bg-gradient-to-l from-primary/60 to-primary/30 ">
       <div className="container">
         {/* Desktop Menu */}
         <nav className="hidden lg:flex justify-between items-center">
           {/* Left: Logo & Links */}
           <div className="flex items-center gap-6">
             <Logo />
+
+          </div>
+
+          {/* Right: Auth Buttons */}
+          <div className="flex gap-14">
             <NavigationMenu>
               <NavigationMenuList>
                 {navLinks.map((item) => (
@@ -90,10 +95,6 @@ const Navbar = ({
                 ))}
               </NavigationMenuList>
             </NavigationMenu>
-          </div>
-
-          {/* Right: Auth Buttons */}
-          <div className="flex gap-2">
             {user ? (
               <Button onClick={() => handleLogout()} variant="outline">Logout</Button>
             ) : (

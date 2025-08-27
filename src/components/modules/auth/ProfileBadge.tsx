@@ -1,32 +1,15 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import {
-  LogOut,
-  ChevronDown, Settings, Bell
-} from "lucide-react";
 import { Progress } from '@/components/ui/progress';
-import { useNavigate, Link } from "react-router";
 
-import { toast } from "sonner";
-import { useLogoutMutation } from '@/redux/features/auth/auth.api';
-
-export default function ProfileBadge({ me }) {
-  const navigate = useNavigate();
-  const [logout] = useLogoutMutation()
-
-  const handleLogout = async () => {
-    try {
-      const res = await logout({}).unwrap();
-      toast.success(res.message);
-      navigate("/auth/login");
-    } catch (err) {
-      toast.error("Logout failed.")
-      console.log(err);
-
-    }
+interface ProfileBadgeProps {
+  me: {
+    name: string;
+    role: string;
+    email: string;
   };
+}
 
+export default function ProfileBadge({ me }: ProfileBadgeProps) {
 
   return (
     <div className="p-4 border-b bg-muted/30">
@@ -44,28 +27,7 @@ export default function ProfileBadge({ me }) {
           </div>
           <p className="text-xs text-muted-foreground truncate">{me.email}</p>
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-8 w-8">
-              <ChevronDown className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem >
-              <Link to={"/driver/profile"}><Settings className="mr-2 h-4 w-4" />
-                Profile Settings</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Bell className="mr-2 h-4 w-4" />
-              Notifications
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => handleLogout()} className="text-red-600">
-              <LogOut className="mr-2 h-4 w-4" />
-              Sign Out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+
       </div>
       <div className="text-xs text-muted-foreground">
         <div className="flex justify-between mb-1">

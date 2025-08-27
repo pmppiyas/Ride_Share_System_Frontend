@@ -1,7 +1,11 @@
 import { Button } from '@/components/ui/button'
 import { MapPin } from "lucide-react"
 
-export default function GettingStarted({ setSelecting }) {
+interface GettingStartedProps {
+  setSelecting: (value: string) => void;
+}
+
+export default function GettingStarted({ setSelecting }: GettingStartedProps) {
   return (
     <div className="text-center py-12 bg-blue-50 rounded-lg border border-blue-200">
       <div className="space-y-4">

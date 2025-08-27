@@ -21,7 +21,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 const vehicleInfoSchema = z.object({
-  type: z.enum(['car', 'bike', 'motorcycle', 'van', 'truck']),
+  type: z.enum(['car', 'bike']),
   model: z.string().min(1, 'Vehicle model is required'),
   plateNumber: z.string().min(1, 'Plate number is required')
 });
@@ -56,7 +56,7 @@ export function DriverRegistrationModal({
     defaultValues: {
       licenseNumber: '',
       vehicleInfo: {
-        type: '',
+        type: undefined,
         model: '',
         plateNumber: ''
       },
@@ -106,7 +106,7 @@ export function DriverRegistrationModal({
             <label className="text-sm font-medium">Vehicle Type</label>
             <Select
               value={values.vehicleInfo.type}
-              onValueChange={(value) => setValue('vehicleInfo.type', value)}
+              onValueChange={(value) => setValue('vehicleInfo.type', value as DriverExtensionFormData['vehicleInfo']['type'])}
             >
               <SelectTrigger className={errors.vehicleInfo?.type ? 'border-red-500' : ''}>
                 <SelectValue placeholder="Select vehicle type" />

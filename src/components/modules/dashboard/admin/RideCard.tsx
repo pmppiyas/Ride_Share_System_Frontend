@@ -1,8 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Star } from "lucide-react"
+import type { Ride } from '@/types';
+import { MapPin } from "lucide-react"
 
-export default function RideCard({ ride }) {
+
+interface RideCardProps {
+  ride: Ride;
+}
+
+export default function RideCard({ ride }: RideCardProps) {
 
 
   const handleRideClick = (ride: any) => {
@@ -45,18 +51,6 @@ export default function RideCard({ ride }) {
             {getStatusText(ride.status)}
           </Badge>
           <span className="font-bold">৳{ride.fare}</span>
-        </div>
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          {ride.rating && (
-            <>
-              <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-              <span>{ride.rating}</span>
-              <span>•</span>
-            </>
-          )}
-          <span>{ride.
-            updatedAt
-          }</span>
         </div>
       </div>
     </div>

@@ -4,7 +4,6 @@ import Signup from "@/components/modules/auth/Signup";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import { checkAuth } from "@/middleware/checkAuth";
 import Home from "@/pages/shared/Home";
-import Profile from "@/pages/shared/Profile";
 import { adminNavItems } from "@/routes/adminNavItems";
 import { driverNavItems } from "@/routes/driverNavItems";
 import { riderNavItems } from "@/routes/riderNavItems";

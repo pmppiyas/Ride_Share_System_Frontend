@@ -1,7 +1,15 @@
-import { Button } from '@/components/ui/button';
-import { useRideRequestMutation } from '@/redux/features/ride/ride.api';
-import type { Driver, FindDriverPayload, IError } from '@/types';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { useRideRequestMutation } from "@/redux/features/ride/ride.api";
+import type { Driver, FindDriverPayload, IError } from "@/types";
 import { toast } from "sonner";
+
 interface DriverModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -9,12 +17,15 @@ interface DriverModalProps {
   location: FindDriverPayload;
 }
 
-
-
-export const RideAssignModal: React.FC<DriverModalProps> = ({ isOpen, onClose, driver, location }) => {
+export const RideAssignModal: React.FC<DriverModalProps> = ({
+  isOpen,
+  onClose,
+  driver,
+  location,
+}) => {
   const [rideRequest, { isLoading }] = useRideRequestMutation();
-  if (!isOpen || !driver) return null;
 
+  if (!driver) return null;
 
   const handleConfirm = async () => {
     try {
@@ -26,60 +37,51 @@ export const RideAssignModal: React.FC<DriverModalProps> = ({ isOpen, onClose, d
 
       await rideRequest(payload).unwrap();
       toast.success(`Ride request sent to ${driver.name}`);
-      onClose()
-    }
-    catch (err) {
-      console.log(err);
+      onClose();
+    } catch (err) {
       const error = err as IError;
       if (error.status === 400) {
-        toast.error(error.data.message)
+        toast.error(error.data.message);
+      } else {
+        toast.error("Some error occurred.");
       }
-      else {
-        toast.error("Some error occoured.");
-      }
+      console.log(err);
     }
-
-  }
+  };
 
   return (
-    <div className="fixed inset-0 bg-opacity-50 z-50 flex items-end justify-center backdrop-blur-sm h-full">
-      <div
-        className="bg-gradient-to-tl from-primary/30 to-primary h-3/4 w-full max-w-lg rounded-t-[70px] shadow-lg px-4 py-8 animate-slideUpmd:pt-12 flex flex-col gap-4"
-      >
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className=" z-[60] max-w-lg bg-gradient-to-tl from-primary/30 to-primary text-background">
+        <DialogHeader>
+          <DialogTitle className="text-3xl text-center">Confirm Ride 🚘</DialogTitle>
+        </DialogHeader>
 
-        <div className=''>
-          <h2 className='text-background text-4xl text-center font-semibold'>Confirm Ride 🚘</h2>
-        </div>
-        <div className=' flex-1 border grid grid-cols-2 p-2'>
-          <h2 className='text-2xl'>From: </h2>
-          <h3>Lat: {location.pickupLocation.lat}</h3>
-          <h3>Lan: {location.pickupLocation.lng}</h3>
-          <h2 className='text-2xl'>To: </h2>
-          <h3>Lat: {location.pickupLocation.lat}</h3>
-          <h3>Lan: {location.pickupLocation.lng}</h3>
-        </div>
-        <div className=' flex-1 border p-2'>
-          <h2 className='text-2xl'>Driver: </h2>
-          <h3>Lat: {driver.name}</h3>
-
-          <h3>Lat: {driver.vehicleInfo?.type}</h3>
-          <h3>Lat: {driver.vehicleInfo?.plateNumber}</h3>
-          <h3>Lat: {driver?.phone}</h3>
+        <div className="grid grid-cols-2 gap-2 border p-2 rounded-md">
+          <h2 className="col-span-2 text-xl font-semibold">From:</h2>
+          <span>Lat: {location.pickupLocation?.lat}</span>
+          <span>Lng: {location.pickupLocation?.lng}</span>
+          <h2 className="col-span-2 text-xl font-semibold">To:</h2>
+          <span>Lat: {location.destinationLocation?.lat}</span>
+          <span>Lng: {location.destinationLocation?.lng}</span>
         </div>
 
-        <div className='flex  justify-between items-center  pb-6'>
-          <Button
-            variant={"outline"}
-            size={"lg"}
-            onClick={onClose}
-          >
+        <div className="border p-2 rounded-md mt-4">
+          <h2 className="text-xl font-semibold mb-2">Driver Info:</h2>
+          <p>Name: {driver.name}</p>
+          <p>Vehicle: {driver.vehicleInfo?.type}</p>
+          <p>Plate: {driver.vehicleInfo?.plateNumber}</p>
+          <p>Phone: {driver.phone}</p>
+        </div>
+
+        <DialogFooter className="flex justify-between pt-4">
+          <Button variant="outline" onClick={onClose}>
             Close
           </Button>
-          <Button size={"lg"} onClick={() => handleConfirm()}>
-            {isLoading ? "Comfirming" : "Confirm"}
+          <Button onClick={handleConfirm}>
+            {isLoading ? "Confirming..." : "Confirm"}
           </Button>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };

@@ -2,7 +2,11 @@ import { Button } from '@/components/ui/button';
 import { CardTitle } from '@/components/ui/card';
 import { Search, RotateCcw } from "lucide-react";
 
-export default function RiderHeader({ handleRefreshDrivers }) {
+interface RiderHeaderProps {
+  handleRefreshDrivers: () => void;
+}
+
+export default function RiderHeader({ handleRefreshDrivers }: RiderHeaderProps) {
   return (
     <div className="flex items-center justify-between">
       <div>

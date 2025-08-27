@@ -4,9 +4,10 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { useGetMyRidesQuery, useSetRideStatusMutation } from '@/redux/features/ride/ride.api';
 import { type IError, type Ride } from '@/types';
 import { toast } from "sonner";
+import Loading from '@/components/modules/dashboard/Rider/Loading';
 
 export default function MyRides() {
-  const { data } = useGetMyRidesQuery(undefined);
+  const { data, isLoading } = useGetMyRidesQuery(undefined);
   const [setRide] = useSetRideStatusMutation();
   const [confirmId, setConfirmId] = useState<string | null>(null);
 
@@ -27,6 +28,11 @@ export default function MyRides() {
       console.log(err);
     }
   };
+
+
+  if (isLoading) {
+    return <Loading title='Rides' />
+  }
 
   if (!data || data.rides.length === 0) {
     return (

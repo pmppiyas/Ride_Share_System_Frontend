@@ -9,65 +9,73 @@ export default function UpdateLocation() {
   const { me } = useAuth();
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isGettingLocation, setIsGettingLocation] = useState(false);
 
-  const [updateProfile, { isLoading, isError }] = useUpdateProfileMutation();
+  const [updateProfile, { isLoading }] = useUpdateProfileMutation();
 
-  // 1. Get user location
+  // Get user location and update profile
   const handleGetLocation = async () => {
+    if (!me?.data?._id) {
+      toast.error('User not authenticated');
+      return;
+    }
+
+    setIsGettingLocation(true);
+    setError(null);
+
     try {
       const loc = await getUserLocation();
       console.log(loc);
 
       if (loc) {
+        setLocation(loc);
         await updateProfile({
           id: me.data._id,
           data: {
-            location: {
-              type: "Point",
-              coordinates: [loc.lat, loc.lng]
-            },
+            location: [loc.lat, loc.lng]
           },
-        });
+        }).unwrap();
+
+        toast.success('Location updated successfully!');
+      } else {
+        throw new Error('Unable to get location');
       }
-
     } catch (err) {
-      setError((err as Error).message || 'Failed to get location');
-    }
-  };
-
-  const updateLocation = async () => {
-    if (!location || !me?.data?._id) return;
-
-    try {
-      toast.success('Location updated successfully!');
-    } catch (err) {
-      toast.error('Failed to update location');
+      const errorMessage = (err as Error).message || 'Failed to get location';
+      setError(errorMessage);
+      toast.error(errorMessage);
       console.error(err);
+    } finally {
+      setIsGettingLocation(false);
     }
   };
 
 
   useEffect(() => {
-    const fetchAndUpdate = async () => {
-      await handleGetLocation();
-
-    };
-    fetchAndUpdate();
-  }, []);
-
-
-  useEffect(() => {
-    if (location) {
-      updateLocation();
-    }
-  }, []);
-
-
+    handleGetLocation();
+  });
 
   return (
-    <div>
+    <div className="space-y-4">
+      <Button
+        onClick={handleGetLocation}
+        disabled={isGettingLocation || isLoading}
+        className="w-full"
+      >
+        {isGettingLocation || isLoading ? 'Updating Location...' : 'Update Location'}
+      </Button>
 
-      <Button>Update Location</Button>
+      {error && (
+        <div className="text-red-500 text-sm">
+          Error: {error}
+        </div>
+      )}
+
+      {location && (
+        <div className="text-green-600 text-sm">
+          Current location: {location.lat.toFixed(6)}, {location.lng.toFixed(6)}
+        </div>
+      )}
     </div>
-  )
+  );
 }

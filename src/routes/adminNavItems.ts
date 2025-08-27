@@ -1,5 +1,5 @@
 import DashboardHome from "@/components/modules/dashboard/admin/DashboardHome";
-import Driver from "@/components/modules/dashboard/admin/Driver";
+import Drivers from '@/components/modules/dashboard/admin/Driver';
 import Rider from "@/components/modules/dashboard/admin/Riders";
 import Rides from "@/components/modules/dashboard/admin/Rides";
 import Setting from "@/components/modules/dashboard/Setting";
@@ -29,7 +29,7 @@ export const adminNavItems = [
         icon: Car,
         badge: "5",
         path: "drivers",
-        component: Driver,
+        component: Drivers,
       },
       {
         id: "riders",

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -12,7 +13,7 @@ import { toast } from "sonner";
 import type { Driver } from '@/types';
 
 
-const Driver = () => {
+const Drivers = () => {
   const [currentDPage, setCurrentDPage] = useState(1);
   const [currentRDPage, setCurrentRDPage] = useState(1);
 
@@ -169,4 +170,4 @@ const Driver = () => {
   );
 };
 
-export default Driver;
+export default Drivers;
