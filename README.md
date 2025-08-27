@@ -1,69 +1,171 @@
-# React + TypeScript + Vite
+# 🚖 Ride Booking System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack, role-based Ride Management Platform (similar to Uber or Pathao)
+with **Riders**, **Drivers**, and **Admins**.  
+Built with **React + Redux Toolkit + RTK Query** for frontend and **Express +
+MongoDB** for backend.
 
-Currently, two official plugins are available:
+The system supports secure authentication, role-based dashboards, real-time ride
+requests, ride tracking, and admin management.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 🌐 Live Demo
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Frontend: [https://ride-share-system-frontend.vercel.app](#)
+- Backend API: [https://ride-share-system-frontend.vercel.app](#)
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## 📹 Demo Video
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+[Demo Video Link Here](#)  
+_(10–15 minutes walkthrough covering login, ride booking, driver management, and
+admin features)_
+
+---
+
+## 🧑‍💻 Test Credentials
+
+| Role   | Email                | Password       |
+| ------ | -------------------- | -------------- |
+| Admin  | superadmin@gmail.com | SuperAdmin12@@ |
+| Driver | zafi@gmail.com       | Zafi@00        |
+| Rider  | mahi@gmail.com       | Mahi@00        |
+
+---
+
+## 🏗️ Tech Stack
+
+**Frontend**
+
+- React.js + React Router
+- Redux Toolkit & RTK Query
+- TypeScript
+- Tailwind CSS
+- Recharts (charts & analytics)
+- Shadcn Toaster (notifications)
+
+**Backend**
+
+- Node.js + Express
+- MongoDB + Mongoose
+- JWT authentication + bcrypt password hashing
+
+---
+
+## 🚀 Features
+
+### 🔹 Public Landing Pages
+
+- Home, About, Features, Contact, FAQ
+- Fully responsive layout with hero banners, testimonials, and call-to-action
+  sections
+
+### 🔹 Authentication & Authorization
+
+- JWT-based login/register with **role selection**
+- Persistent authentication
+- Account status handling (Blocked/Suspended users)
+
+### 🔹 Rider Dashboard
+
+- Request rides with pickup & destination
+- Cancel rides (within allowed window)
+- Ride history with filters and pagination
+- Profile management
+- Live ride tracking (optional)
+
+### 🔹 Driver Dashboard
+
+- Online/Offline toggle for availability
+- Accept/Reject ride requests
+- Update ride statuses (Picked Up → In Transit → Completed)
+- Earnings dashboard with charts
+- Ride history & profile management
+
+### 🔹 Admin Dashboard
+
+- Manage users (block/unblock, approve/suspend)
+- View and filter all rides
+- Analytics dashboard for rides, revenue, and driver activity
+
+### 🔹 General Enhancements
+
+- Role-based navigation
+- Skeleton loaders & lazy-loading heavy assets
+- Emergency/SOS button during active rides
+- Form validation, error handling, and toast notifications
+- Accessibility-compliant components
+
+---
+
+## 📁 Project Structure
+
+**Frontend**
+
+```javascript
+src/
+├── components/ # Reusable UI components
+├── features/ # Redux slices & RTK Query endpoints
+├── pages/ # Public & role-based pages
+├── routes/ # Route protection & navigation
+├── store/ # Redux store
+├── utils/ # Helper functions
+└── App.tsx # Main App component
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+**Backend**
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+````javascript
+src/
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Usage/Examples
+
+```javascript
+src/
+├── models/         # Data schemas, types, API logic (RTK Query, Mongoose types)
+│   └── user.ts
+│   └── auth.ts
+│
+├── views/          # UI components and pages
+│   ├── components/ # Reusable UI elements
+│   └── pages/      # Role-based and public pages
+│
+├── controllers/    # Route guards, form handlers, business logic
+│   ├── authController.ts
+│   └── routeController.ts
+│
+├── routes/         # Navigation and route protection
+│   └── index.tsx
+│
+├── store/          # Redux store setup
+│   └── index.ts
+│
+├── utils/          # Helper functions (validation, formatting, etc.)
+│   └── formatDate.ts
+│
+└── App.tsx         # Main app entry, controller injection
+````
+
+---
+
+## ⚙️ Setup Instructions
+
+### Prerequisites
+
+- Node.js v16+
+- npm or yarn
+- MongoDB (local or Atlas)
+
+### Frontend Setup
+
+```bash
+cd ride_share_system_frontend
+npm install
+cp .env.example .env
+npm run dev       # Start dev server
+npm run build     # Build production
+npm run preview   # Preview build
+
 ```

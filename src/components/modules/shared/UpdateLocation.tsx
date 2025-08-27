@@ -1,5 +1,5 @@
 import { useAuth } from '@/hooks/useAuth';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useUpdateProfileMutation } from '@/redux/features/auth/auth.api';
 import { getUserLocation } from '@/utils/getUserLocation';
 import { toast } from 'sonner';
@@ -36,14 +36,13 @@ export default function UpdateLocation() {
           },
         }).unwrap();
 
-        toast.success('Location updated successfully!');
       } else {
         throw new Error('Unable to get location');
       }
     } catch (err) {
       const errorMessage = (err as Error).message || 'Failed to get location';
       setError(errorMessage);
-      toast.error(errorMessage);
+      // toast.error(errorMessage);
       console.error(err);
     } finally {
       setIsGettingLocation(false);
@@ -51,9 +50,9 @@ export default function UpdateLocation() {
   };
 
 
-  useEffect(() => {
-    handleGetLocation();
-  });
+  // useEffect(() => {
+  //   handleGetLocation();
+  // });
 
   return (
     <div className="space-y-4">
