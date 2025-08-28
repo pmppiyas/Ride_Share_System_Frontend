@@ -39,7 +39,7 @@ export const HowItWorks = () => {
           {steps.map((step, index) => (
             <div key={index} className="relative group">
               <div className="bg-background rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-                <div className="bg-primary text-foreground rounded-full w-20 h-20 flex items-center justify-center mb-6 mx-auto group-hover:text-accent transition-colors">
+                <div className="bg-gradient-to-r from-primary to-primary/70 text-foreground rounded-full w-20 h-20 flex items-center justify-center mb-6 mx-auto group-hover:text-accent transition-colors">
                   {step.icon}
                 </div>
                 <h3 className="text-xl font-bold text-foreground mb-4 text-center">
