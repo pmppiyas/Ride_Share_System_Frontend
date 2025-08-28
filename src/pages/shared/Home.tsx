@@ -1,3 +1,4 @@
+import { CustomerTestimonials } from '@/components/modules/home/CustomerTestimonials';
 import { Hero } from '@/components/modules/home/Hero';
 import { HowItWorks } from '@/components/modules/home/HowItWork';
 import { ServiceHighlights } from '@/components/modules/home/ServiceHighlights';
@@ -9,6 +10,7 @@ export default function Home() {
       <Hero />
       <HowItWorks />
       <ServiceHighlights />
+      <CustomerTestimonials />
     </div>
   );
 }
