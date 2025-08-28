@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import FAQSection from '@/pages/shared/FAQ';
 
 const AboutUs = () => {
   const stats = [
@@ -195,6 +196,8 @@ const AboutUs = () => {
             </p>
           </CardContent>
         </Card>
+
+        <FAQSection />
       </div>
     </div>
   );
