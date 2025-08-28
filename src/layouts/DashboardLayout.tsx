@@ -34,10 +34,10 @@ const DashboardLayout = () => {
 
 
   const quickActions = [
-    { label: 'Add New Driver', icon: UserPlus, color: 'bg-blue-500' },
-    { label: 'Emergency Alert', icon: AlertTriangle, color: 'bg-red-500' },
-    { label: 'System Health', icon: Zap, color: 'bg-green-500' },
-    { label: 'Send Broadcast', icon: Globe, color: 'bg-purple-500' }
+    { label: 'Add New Driver', path: "/", icon: UserPlus, color: 'bg-blue-500' },
+    { label: 'Emergency Alert', path: "/SOS", icon: AlertTriangle, color: 'bg-red-500' },
+    { label: 'System Health', path: "/", icon: Zap, color: 'bg-green-500' },
+    { label: 'Send Broadcast', path: "/", icon: Globe, color: 'bg-purple-500' }
   ];
   useEffect(() => {
     setActiveSection(location.pathname);
@@ -115,10 +115,11 @@ const DashboardLayout = () => {
                   size="sm"
                   className="flex flex-col gap-1 h-16 p-2"
                 >
-                  <div className={`p-1 rounded ${action.color}`}>
-                    <action.icon className="h-3 w-3 text-white" />
-                  </div>
-                  <span className="text-xs">{action.label}</span>
+                  <Link to={action.path}>
+                    <div className={`p-1 w-max rounded ${action.color}`}>
+                      <action.icon className="h-3 w-3 text-white" />
+                    </div>
+                    <span className="text-xs">{action.label}</span></Link>
                 </Button>
               ))}
             </div>

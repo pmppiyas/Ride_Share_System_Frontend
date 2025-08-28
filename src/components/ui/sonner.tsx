@@ -9,7 +9,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
       theme={theme as ToasterProps["theme"]}
       className="toaster group"
       position="top-right"
-      duration={1500}
+      duration={2000}
       richColors
       style={
         {
