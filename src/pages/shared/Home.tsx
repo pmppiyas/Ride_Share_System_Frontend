@@ -1,3 +1,5 @@
+import { CallToAction } from '@/components/modules/home/CallToAction';
+import { ContactForm } from '@/components/modules/home/ContactForm';
 import { CustomerTestimonials } from '@/components/modules/home/CustomerTestimonials';
 import { Hero } from '@/components/modules/home/Hero';
 import { HowItWorks } from '@/components/modules/home/HowItWork';
@@ -11,6 +13,8 @@ export default function Home() {
       <HowItWorks />
       <ServiceHighlights />
       <CustomerTestimonials />
+      <ContactForm />
+      <CallToAction />
     </div>
   );
 }
