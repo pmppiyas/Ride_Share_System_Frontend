@@ -67,7 +67,7 @@ const Navbar = ({
 
 
   return (
-    <section className="p-4 flex justify-center bg-gradient-to-l from-primary/60 to-primary/30 ">
+    <section className="p-4 flex justify-center bg-gradient-to-l from-primary/30 via-primary/50 to-primary/0">
       <div className="container">
         {/* Desktop Menu */}
         <nav className="hidden lg:flex justify-between items-center">

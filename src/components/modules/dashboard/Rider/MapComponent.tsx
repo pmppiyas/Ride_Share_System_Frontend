@@ -54,7 +54,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
     <>
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-gray-900">Interactive Map</h3>
+          <h3 className="text-lg font-semibold text-primary">Interactive Map</h3>
           <div className="text-sm text-gray-600">
             Drivers found: {allDrivers.length} total, {nearbyDrivers.length} nearby
           </div>

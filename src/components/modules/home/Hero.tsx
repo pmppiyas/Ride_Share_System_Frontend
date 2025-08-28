@@ -1,98 +1,54 @@
-import { Star } from "lucide-react";
+import { Car, Clock, Shield, } from 'lucide-react';
 
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 
-interface Hero7Props {
-  heading?: string;
-  description?: string;
-  button?: {
-    text: string;
-    url: string;
-  };
-  reviews?: {
-    count: number;
-    rating?: number;
-    avatars: {
-      src: string;
-      alt: string;
-    }[];
-  };
-}
-
-const Hero = ({
-  heading = "Explore Your New Ride Share Experience",
-  description = "Book rides instantly, track your driver in real-time, and enjoy a smooth journey—all powered by a modern React, Tailwind, and Shadcn UI stack. Built for riders who value speed, comfort, and control.",
-  button = {
-    text: "Start Your First Ride",
-    url: "/",
-  },
-  reviews = {
-    count: 200,
-    rating: 5.0,
-    avatars: [
-      {
-        src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/avatar-1.webp",
-        alt: "Avatar 1",
-      },
-      {
-        src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/avatar-2.webp",
-        alt: "Avatar 2",
-      },
-      {
-        src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/avatar-3.webp",
-        alt: "Avatar 3",
-      },
-      {
-        src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/avatar-4.webp",
-        alt: "Avatar 4",
-      },
-      {
-        src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/avatar-5.webp",
-        alt: "Avatar 5",
-      },
-    ],
-  },
-}: Hero7Props) => {
+export const Hero = () => {
   return (
-    <section className=" bg-background py-8 h-full container text-center">
-      <div className="mx-auto flex max-w-5xl flex-col gap-6">
-        <h1 className="text-3xl font-extrabold lg:text-6xl">{heading}</h1>
-        <p className="text-muted-foreground text-balance lg:text-lg">
-          {description}
-        </p>
-      </div>
-      <Button asChild size="lg" className="mt-10">
-        <a href={button.url}>{button.text}</a>
-      </Button>
-      <div className="mx-auto mt-10 flex w-fit flex-col items-center gap-4 sm:flex-row">
-        <span className="mx-4 inline-flex items-center -space-x-4">
-          {reviews.avatars.map((avatar, index) => (
-            <Avatar key={index} className="size-14 border">
-              <AvatarImage src={avatar.src} alt={avatar.alt} />
-            </Avatar>
-          ))}
-        </span>
-        <div>
-          <div className="flex items-center gap-1">
-            {[...Array(5)].map((_, index) => (
-              <Star
-                key={index}
-                className="size-5 fill-yellow-400 text-yellow-400"
-              />
-            ))}
-            <span className="mr-1 font-semibold">
-              {reviews.rating?.toFixed(1)}
-            </span>
+    <section className="relative bg-gradient-to-br from-primary/50 via-primary/10 to-primary/0 text-foreground py-20 px-4">
+      <div className="max-w-6xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="space-y-8">
+            <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
+              Your Journey
+              <span className="block text-foreground">Starts Here</span>
+            </h1>
+            <p className="text-xl text-accent-foreground leading-relaxed">
+              Experience the future of transportation with RideShare Pro.
+              Safe, reliable, and affordable rides at your fingertips.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button className="bg-foreground text-primary px-8 py-4 rounded-full font-semibold text-lg hover:bg-foreground transition-all transform hover:scale-105">
+                Book a Ride
+              </button>
+              <button className="border-2 border-foreground text-primary px-8 py-4 rounded-full font-semibold text-lg hover:bg-foreground hover:text-primary transition-all">
+                Become a Driver
+              </button>
+            </div>
           </div>
-          <p className="text-muted-foreground text-left font-medium">
-            from {reviews.count}+ reviews
-          </p>
+          <div className="relative">
+            <div className="bg-foreground rounded-3xl p-8 transform rotate-3 hover:rotate-0 transition-transform duration-500">
+              <Car className="w-32 h-32 text-primary mx-auto" />
+              <div className="mt-6 space-y-3">
+                <div className="flex items-center justify-between text-primary">
+                  <span className="font-semibold">Available Now</span>
+                  <span className="bg-green-500 w-3 h-3 rounded-full"></span>
+                </div>
+                <div className="text-background/80">
+                  <p>Honda Civic • 4.9★</p>
+                  <p className="text-sm">2 min away</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
+      {/* Floating Elements */}
+      <div className="absolute top-20 right-10 bg-foreground/20 backdrop-blur-sm rounded-full p-4 animate-bounce">
+        <Clock className="w-8 h-8 text-primary" />
+      </div>
+      <div className="absolute bottom-20 left-10 bg-foreground/20 backdrop-blur-sm rounded-full p-4 animate-pulse">
+        <Shield className="w-8 h-8 text-primary" />
+      </div>
     </section>
   );
 };
-
-export { Hero };

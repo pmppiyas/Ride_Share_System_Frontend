@@ -14,7 +14,7 @@ export default function NotFound({ handleFind, handleReset, isLoading }: NotFoun
       <div className="space-y-4">
         <div className="text-6xl">🚗</div>
         <div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <h3 className="text-lg font-medium text-primary mb-2">
             No Available Drivers Found
           </h3>
           <p className="text-gray-600 max-w-md mx-auto">
