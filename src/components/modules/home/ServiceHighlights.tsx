@@ -1,3 +1,4 @@
+import Heading from '@/components/modules/shared/Heading';
 import { Shield, CheckCircle, Zap, Award } from 'lucide-react';
 
 export const ServiceHighlights = () => {
@@ -25,12 +26,8 @@ export const ServiceHighlights = () => {
   return (
     <section className="py-20 px-4 bg-background">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-foreground mb-6">Why Choose RideShare Pro</h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Experience the difference with our premium ride-sharing service designed for your comfort and safety.
-          </p>
-        </div>
+
+        <Heading head='Why Choose RideShare Pro' title='Experience the difference with our premium ride-sharing service designed for your comfort and safety.' />
 
         <div className="grid lg:grid-cols-3 gap-8">
           {services.map((service, index) => (

@@ -1,3 +1,4 @@
+import Heading from '@/components/modules/shared/Heading';
 import { Star } from 'lucide-react';
 
 export const CustomerTestimonials = () => {
@@ -28,12 +29,7 @@ export const CustomerTestimonials = () => {
   return (
     <section className="py-20 px-4 bg-gradient-to-tr from-primary/50 via-primary/10 to-primary/0">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-primary mb-6">What Our Customers Say</h2>
-          <p className="text-xl text-muted-foreground">
-            Join thousands of satisfied riders who trust RideShare Pro for their daily journeys.
-          </p>
-        </div>
+        <Heading head='What Our Customers Say' title='Join thousands of satisfied riders who trust RideShare Pro for their daily journeys.' />
 
         <div className="grid lg:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (

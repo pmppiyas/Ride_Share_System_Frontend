@@ -1,3 +1,4 @@
+import Heading from '@/components/modules/shared/Heading';
 import { Car, Phone, CheckCircle, Users, } from 'lucide-react';
 
 
@@ -28,12 +29,8 @@ export const HowItWorks = () => {
   return (
     <section className="py-20 px-4 bg-background">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-foreground mb-6">How It Works</h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Getting around has never been easier. Follow these simple steps to start your journey.
-          </p>
-        </div>
+
+        <Heading head='How It Works' title='Getting around has never been easier. Follow these simple steps to start your journey.' />
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {steps.map((step, index) => (

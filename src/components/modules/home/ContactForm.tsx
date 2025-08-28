@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import Heading from '@/components/modules/shared/Heading';
 export function ContactForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -33,7 +34,7 @@ export function ContactForm() {
     },
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = () => {
     toast.success("  Thank you! Your message has been sent successfully.")
     setIsSubmitted(true);
     form.reset();
@@ -46,13 +47,9 @@ export function ContactForm() {
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Contact Info */}
           <div className="text-background space-y-8">
-            <div>
-              <h2 className="text-4xl font-bold mb-6">Get in Touch</h2>
-              <p className="text-xl text-background/80 leading-relaxed">
-                Ready to start your journey with us? Have questions about our
-                service? We'd love to hear from you.
-              </p>
-            </div>
+
+            <Heading head='Get in Touch' title="Ready to start your journey with us? Have questions about our
+                service? We'd love to hear from you." />
 
             <div className="space-y-6">
               {[
@@ -175,7 +172,6 @@ export function ContactForm() {
                       </FormItem>
                     )}
                   />
-
 
                 </div>
 
