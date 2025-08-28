@@ -43,12 +43,13 @@ const Navbar = ({
 
   const navLinks = [
     { title: "Home", url: "/" },
-    { title: "Get Ride", url: "/rider/find_driver" },
+    ...(role === Role.RIDER
+      ? [{ title: "Get Ride", url: "/rider/find_driver" }]
+      : []),
     { title: "Dashboard", url: getRolebasedLinks(role) },
-    { title: "Pricing", url: "/pricing" },
+    { title: "About Us", url: "/about_us" },
     { title: "Blog", url: "/blog" },
   ];
-
 
   const navigate = useNavigate();
   const [logout] = useLogoutMutation()
