@@ -55,7 +55,7 @@ const Hero = ({
   },
 }: Hero7Props) => {
   return (
-    <section className="py-8 h-full container text-center">
+    <section className=" bg-background py-8 h-full container text-center">
       <div className="mx-auto flex max-w-5xl flex-col gap-6">
         <h1 className="text-3xl font-extrabold lg:text-6xl">{heading}</h1>
         <p className="text-muted-foreground text-balance lg:text-lg">

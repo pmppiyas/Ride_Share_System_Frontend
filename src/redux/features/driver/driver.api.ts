@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { baseApi } from "@/redux/baseApi";
+import type { Ride } from "@/types";
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -58,6 +60,23 @@ export const authApi = baseApi.injectEndpoints({
       providesTags: ["DRIVER"],
       transformResponse: (res) => res.data,
     }),
+
+    getMyDrives: builder.query<Ride[], null>({
+      query: () => ({
+        url: "/ride/my-drives",
+        method: "GET",
+      }),
+      providesTags: ["DRIVER"],
+      transformResponse: (res: any) => res.data.rides,
+    }),
+
+    setRideStatus: builder.mutation({
+      query: ({ id, action }) => ({
+        url: `/ride/set-status/${id}`,
+        method: "PATCH",
+        data: { status: action },
+      }),
+    }),
   }),
 });
 
@@ -68,4 +87,6 @@ export const {
   useGetDriversQuery,
   useGetEarningsQuery,
   useGetRideHistoryQuery,
+  useGetMyDrivesQuery,
+  useSetRideStatusMutation,
 } = authApi;

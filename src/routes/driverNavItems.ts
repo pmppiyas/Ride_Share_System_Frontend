@@ -1,7 +1,8 @@
-import { Home, Settings, UserRound } from "lucide-react";
+import { Home, Settings, UserRound, PhoneIncoming } from "lucide-react";
 import DHome from "@/components/modules/dashboard/driver/Home";
 import DProfile from "@/components/modules/dashboard/driver/DProfile";
 import DSetting from "@/components/modules/dashboard/driver/DSetting";
+import DriveRequest from "@/components/modules/dashboard/driver/DriveRequest";
 
 export const driverNavItems = [
   {
@@ -13,6 +14,13 @@ export const driverNavItems = [
         icon: Home,
         index: true,
         component: DHome,
+      },
+      {
+        id: "mydriverequest",
+        label: "Ride Invitaion",
+        path: "ride_request",
+        icon: PhoneIncoming,
+        component: DriveRequest,
       },
     ],
   },
