@@ -100,7 +100,7 @@ export default function MyRides() {
 
       {/* Confirmation Modal */}
       {confirmId && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center">
+        <div className="fixed inset-0 z-50 bg-transparent  backdrop-blur-sm flex items-center justify-center">
           <div className="bg-white rounded-lg shadow-lg p-6 w-[90%] max-w-sm">
             <h2 className="text-lg font-semibold mb-4">Confirm Cancellation</h2>
             <p className="text-sm text-muted-foreground mb-6">

@@ -34,9 +34,9 @@ export default function RideCard({ ride }: RideCardProps) {
         <div className={`w-3 h-3 rounded-full ${getStatusColor(ride.status)}`} />
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="font-semibold">{ride.rider.name}</span>
+            <span className="font-semibold">{ride?.rider?.name}</span>
             <span className="text-muted-foreground">→</span>
-            <span className="font-medium">{ride.driver?.name}</span>
+            <span className="font-medium">{ride?.driver?.name}</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <MapPin className="h-3 w-3" />

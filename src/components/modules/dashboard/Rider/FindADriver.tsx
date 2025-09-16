@@ -123,6 +123,7 @@ const FindDriverMap: React.FC = () => {
   const handleDriverClick = useCallback((driver: Driver): void => {
     setAssignDriver(driver);
     setOpenModal(true);
+    console.log(driver)
   }, []);
 
   const handleAssignDriver = useCallback((driver: Driver): void => {

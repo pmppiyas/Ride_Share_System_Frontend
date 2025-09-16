@@ -33,7 +33,7 @@ export const rideApi = baseApi.injectEndpoints({
       invalidatesTags: ["RIDE"],
     }),
     setRideStatus: builder.mutation({
-      query: ({ status, id }) => ({
+      query: ({ id, status }) => ({
         url: `/ride/set-status/${id}`,
         method: "PUT",
         data: { status },

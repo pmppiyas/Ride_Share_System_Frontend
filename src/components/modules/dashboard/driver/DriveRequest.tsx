@@ -16,14 +16,15 @@ export default function DriveRequest() {
     return <Loading title='Drive Request' />
   }
 
-  const handleAction = async (id: string, action: string) => {
+  const handleAction = async (id: string, status: string) => {
     try {
-      await setRideStatus({ id, action });
-      toast.success(`Ride ${action} successfully.`)
+      console.log(status)
+      await setRideStatus({ id, status }).unwrap();
+      toast.success(`Ride ${status} successfully.`)
     }
     catch (err) {
       console.log(err)
-      toast.error(`Ride ${action} unsuccessfull.`)
+      toast.error(`Ride ${status} unsuccessfull.`)
     }
 
   }
@@ -63,8 +64,29 @@ export default function DriveRequest() {
                       </button>
                     </div>
                   ) : (
-                    <span className='text-gray-500'>—</span>
+                    ""
                   )}
+
+                  {
+                    !["completed", "accepted", "canceled", "requested"].includes(drive.status) && (
+                      <button
+                        onClick={() => handleAction(drive._id, "completed")}
+                        className='px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600'
+                      >
+                        Make finish
+                      </button>
+                    )
+                  }
+
+
+                  {/* {["accepted", "picked_up", "in_transit"].includes(drive.status) && (
+                    <button
+                      onClick={() => handleAction(drive._id, "completed")}
+                      className='px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600'
+                    >
+                      Make finish
+                    </button>
+                  )} */}
                 </td>
               </tr>
             ))}

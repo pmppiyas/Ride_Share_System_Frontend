@@ -102,14 +102,18 @@ const MapComponent: React.FC<MapComponentProps> = ({
             if (!coords) return null;
 
             return (
-              <Marker
-                key={`all-${getDriverKey(driver, index)}`}
-                position={coords}
-                icon={MapIcons.driverIcon}
-                eventHandlers={{
-                  click: () => handleDriverClick(driver)
-                }}
-              />
+              <>
+                <Marker
+                  key={`all-${getDriverKey(driver, index)}`}
+                  position={coords}
+                  icon={MapIcons.driverIcon}
+
+                  eventHandlers={{
+                    click: () => handleDriverClick(driver)
+                  }}
+                />
+                <h2>{driver.name}</h2>
+              </>
             );
           })}
 

@@ -74,7 +74,7 @@ export const RideAssignModal: React.FC<DriverModalProps> = ({
         </div>
 
         <DialogFooter className="flex justify-between pt-4">
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" onClick={onClose} className='text-foreground '>
             Close
           </Button>
           <Button onClick={handleConfirm}>
