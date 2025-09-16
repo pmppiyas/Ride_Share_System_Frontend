@@ -47,8 +47,7 @@ const Navbar = ({
       ? [{ title: "Get Ride", url: "/rider/find_driver" }]
       : []),
     { title: "Dashboard", url: getRolebasedLinks(role) },
-    { title: "About Us", url: "/about_us" },
-    { title: "Blog", url: "/blog" },
+    { title: "About Us", url: "/about_us" }
   ];
 
   const navigate = useNavigate();

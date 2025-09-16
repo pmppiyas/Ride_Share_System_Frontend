@@ -35,11 +35,12 @@ export const authApi = baseApi.injectEndpoints({
     }),
 
     updateProfile: builder.mutation({
-      query: ({ id, data }) => ({
+      query: ({ id, ...formData }) => ({
         url: `/user/update/${id}`,
         method: "PATCH",
-        data: data,
+        data: formData,
       }),
+      invalidatesTags: ["AUTH"],
     }),
   }),
 });

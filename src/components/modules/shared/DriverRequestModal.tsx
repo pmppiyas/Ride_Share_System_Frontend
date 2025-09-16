@@ -68,13 +68,12 @@ export function DriverRegistrationModal({
 
 
   const submitHandler = (data: DriverExtensionFormData) => {
-
     onSubmit(data);
   };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="max-w-5xl ">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <CarFront className="h-5 w-5" />
@@ -114,7 +113,6 @@ export function DriverRegistrationModal({
               <SelectContent>
                 <SelectItem value="car">Car</SelectItem>
                 <SelectItem value="bike">Bike</SelectItem>
-                <SelectItem value="motorcycle">Motorcycle</SelectItem>
                 <SelectItem value="van">Van</SelectItem>
                 <SelectItem value="truck">Truck</SelectItem>
               </SelectContent>

@@ -1,21 +1,25 @@
-import { useState } from 'react';
-import RideCard from '@/components/modules/dashboard/ride/RideCard';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { useGetMyRidesQuery, useSetRideStatusMutation } from '@/redux/features/ride/ride.api';
-import { type IError, type Ride } from '@/types';
+
+import { useState } from "react";
+import RideCard from "@/components/modules/dashboard/ride/RideCard";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import {
+  useGetMyRidesQuery,
+  useSetRideStatusMutation,
+} from "@/redux/features/ride/ride.api";
+import { type IError, type Ride } from "@/types";
 import { toast } from "sonner";
-import Loading from '@/components/modules/dashboard/Rider/Loading';
+import Loading from "@/components/modules/dashboard/Rider/Loading";
 
 export default function MyRides() {
   const { data, isLoading } = useGetMyRidesQuery(undefined);
-  const [setRide] = useSetRideStatusMutation();
+  const [setRideStatus] = useSetRideStatusMutation();
   const [confirmId, setConfirmId] = useState<string | null>(null);
 
   const confirmCancel = async () => {
     if (!confirmId) return;
 
     try {
-      await setRide({ id: confirmId, status: "canceled" }).unwrap();
+      await setRideStatus({ id: confirmId, status: "canceled" }).unwrap();
       toast.success("Ride canceled successfully.");
       setConfirmId(null);
     } catch (err) {
@@ -29,10 +33,11 @@ export default function MyRides() {
     }
   };
 
-
   if (isLoading) {
-    return <Loading title='Rides' />
+    return <Loading title="Rides" />;
   }
+
+  console.log(data);
 
   if (!data || data.rides.length === 0) {
     return (
@@ -77,14 +82,18 @@ export default function MyRides() {
                   <RideCard
                     key={ride._id}
                     ride={ride}
-                    onCancel={() => setConfirmId(ride._id)}
+                    onCancel={
+                      ride.status !== "canceled"
+                        ? () => setConfirmId(ride._id)
+                        : () => { }
+                    }
                   />
                 ))}
               </tbody>
             </table>
           </div>
           <div className="mt-4 text-sm text-muted-foreground">
-            Showing {data.meta.count} ride{data.meta.count !== 1 ? 's' : ''}
+            Showing {data.meta.count} ride{data.meta.count !== 1 ? "s" : ""}
           </div>
         </CardContent>
       </Card>

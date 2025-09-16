@@ -20,18 +20,24 @@ import ProfileBadge from '@/components/modules/auth/ProfileBadge';
 import { getNavItems } from '@/utils/getNavItems';
 import { useAuth } from '@/hooks/useAuth';
 import { getRolebasedLinks } from '@/utils/getRolebaseLinks';
+import { getCurrentLocation, type Location } from '@/utils/GetCurrentLocation';
+import { toast } from "sonner";
+import { DashboardProvider } from '@/provider/dashboard.provider';
 
-const DashboardLayout = () => {
+const DashboardLayoutContent = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('dashboard');
+
+  // 🔹 Dashboard control states
   const [selectedPeriod, setSelectedPeriod] = useState('7d');
+  const [search, setSearch] = useState('');
+  const [sort, setSort] = useState<'asc' | 'desc'>('asc');
+
   const location = useLocation();
   const { me } = useAuth();
 
-
   const userRole = me?.data?.role;
   const navItems = getNavItems(userRole);
-
 
   const quickActions = [
     { label: 'Add New Driver', path: "/", icon: UserPlus, color: 'bg-blue-500' },
@@ -39,14 +45,29 @@ const DashboardLayout = () => {
     { label: 'System Health', path: "/", icon: Zap, color: 'bg-green-500' },
     { label: 'Send Broadcast', path: "/", icon: Globe, color: 'bg-purple-500' }
   ];
+
   useEffect(() => {
     setActiveSection(location.pathname);
   }, [location]);
 
+  const [open, setOpen] = useState(false);
+  const [geoLocation, setGeoLocation] = useState<Location | null>(null);
+
+  const handleSOS = async () => {
+    setOpen(false);
+
+    getCurrentLocation(
+      (loc: Location) => {
+        toast.success("Your Location Sended, We are helping as soon as possible.");
+        setGeoLocation(loc);
+      },
+      () => toast.error("Location access denied")
+    );
+  };
+
   const renderSidebarItem = (item: any) => {
     const route = getRolebasedLinks(userRole);
     const fullPath = item.path ? `${route}/${item.path}` : route;
-
     const isActive = activeSection === fullPath;
 
     return (
@@ -91,7 +112,7 @@ const DashboardLayout = () => {
           {/* User Profile Section */}
           <ProfileBadge me={me.data} />
 
-          {/* Navigation - Make this scrollable */}
+          {/* Navigation */}
           <nav className="flex-1 overflow-y-auto p-4 space-y-6">
             {navItems.map((section) => (
               <div key={section.section}>
@@ -110,27 +131,27 @@ const DashboardLayout = () => {
             <div className="grid grid-cols-2 gap-2">
               {quickActions.map((action, index) => (
                 <Button
+                  onClick={handleSOS}
                   key={index}
                   variant="outline"
                   size="sm"
                   className="flex flex-col gap-1 h-16 p-2"
                 >
-                  <Link to={action.path}>
-                    <div className={`p-1 w-max rounded ${action.color}`}>
-                      <action.icon className="h-3 w-3 text-white" />
-                    </div>
-                    <span className="text-xs">{action.label}</span></Link>
+                  <div className={`p-1 w-max rounded ${action.color}`}>
+                    <action.icon className="h-3 w-3 text-white" />
+                  </div>
+                  <span className="text-xs">{action.label}</span>
                 </Button>
               ))}
             </div>
           </div>
         </aside>
 
-        {/* Main Content Area */}
+        {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Top Header */}
-          <header className="h-16 bg-card border-b flex items-center justify-between px-6">
-            <div className="flex items-center gap-4">
+          <header className="h-16 bg-card border-b flex items-center justify-between px-6 gap-4">
+            <div className="flex items-center md:gap-4">
               <Button
                 variant="ghost"
                 size="icon"
@@ -141,7 +162,7 @@ const DashboardLayout = () => {
               </Button>
 
               <div className="flex items-center gap-3">
-                <h2 className="text-xl font-semibold capitalize">
+                <h2 className="text-sm md:text-xl font-semibold capitalize">
                   {activeSection === 'dashboard' ? 'Overview' : activeSection.replace('-', ' ')}
                 </h2>
                 <Badge variant="outline" className="text-xs">
@@ -151,40 +172,47 @@ const DashboardLayout = () => {
             </div>
 
             <div className="flex items-center gap-4">
-              <div className="relative hidden md:block">
+              <div className="relative">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   placeholder="Search..."
-                  className="pl-10 w-64"
+                  className="pl-10 md:w-64"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
 
-              <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-                <SelectTrigger className="w-32">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1d">Today</SelectItem>
-                  <SelectItem value="7d">7 Days</SelectItem>
-                  <SelectItem value="30d">30 Days</SelectItem>
-                  <SelectItem value="90d">3 Months</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="relative ">
+                <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
+                  <SelectTrigger className="w-32">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1d">Today</SelectItem>
+                    <SelectItem value="7d">7 Days</SelectItem>
+                    <SelectItem value="30d">30 Days</SelectItem>
+                    <SelectItem value="90d">3 Months</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-              <Button variant="outline" size="icon" className="relative">
-                <Bell className="h-4 w-4" />
-                <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500" />
-              </Button>
-
-              <Button variant="outline" size="icon">
-                <Filter className="h-4 w-4" />
-              </Button>
+              <div className="relative hidden md:block">
+                <Select value={sort} onValueChange={(val: 'asc' | 'desc') => setSort(val)}>
+                  <SelectTrigger className="w-28">
+                    <SelectValue placeholder="Sort" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="asc">Ascending</SelectItem>
+                    <SelectItem value="desc">Descending</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </header>
 
-          {/* Main Content */}
+          {/* Pass all controls via context */}
           <main className="flex-1 overflow-y-auto bg-muted/30 p-6">
-            <Outlet />
+            <Outlet context={{ selectedPeriod, search, sort }} />
           </main>
         </div>
 
@@ -197,6 +225,14 @@ const DashboardLayout = () => {
         )}
       </div>
     </>
+  );
+};
+
+const DashboardLayout = () => {
+  return (
+    <DashboardProvider>
+      <DashboardLayoutContent />
+    </DashboardProvider>
   );
 };
 

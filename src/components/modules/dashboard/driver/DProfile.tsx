@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Pencil, CarFront, Check } from 'lucide-react';
-import { Link } from "react-router";
+import { Link } from 'react-router';
 import { DriverRegistrationModal } from '@/components/modules/shared/DriverRequestModal';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
@@ -10,24 +10,28 @@ import { useDriverRegisterMutation } from '@/redux/features/driver/driver.api';
 import { Role, type IError } from '@/types';
 import { useGetMyRidesQuery } from '@/redux/features/ride/ride.api';
 import RideCard from '@/components/modules/dashboard/admin/RideCard';
-
+import { DriverEditModal } from '@/components/modules/shared/EditProfileModal';
+import { useUpdateProfileMutation } from '@/redux/features/auth/auth.api';
 
 export default function DProfile() {
   const { me, isError } = useAuth();
   const user = me?.data;
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [driverRegister] = useDriverRegisterMutation(undefined);
-  const { data, isLoading: RLoading } = useGetMyRidesQuery({ limit: "3" });
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedDriver, setSelectedDriver] = useState<any>(null);
 
-  if (isError) toast.error("Failed to fetch user data. Please try again.");
+  const [driverRegister, { isLoading }] = useDriverRegisterMutation();
+  const [updateProfile, { isLoading: updateLoading }] = useUpdateProfileMutation();
+  const { data, isLoading: RLoading } = useGetMyRidesQuery({ limit: '3' });
 
+  if (isError) toast.error('Failed to fetch user data. Please try again.');
   if (RLoading) return <h2 className="text-center mt-6">Loading...</h2>;
 
   const Rides = data?.rides || [];
 
   const beADriver = () => {
-    if (user?.role === Role.DRIVER && user.approvalStatus === "approved") {
-      toast.success("You are already a driver.");
+    if (user?.role === Role.DRIVER && user.approvalStatus === 'approved') {
+      toast.success('You are already a driver.');
       return;
     }
     setIsModalOpen(true);
@@ -35,8 +39,8 @@ export default function DProfile() {
 
   const handleDriverSubmit = async (formData: any) => {
     try {
-      if (user?.role === Role.DRIVER && user.approvalStatus === "approved") {
-        toast.success("You are already a driver.");
+      if (user?.role === Role.DRIVER && user.approvalStatus === 'approved') {
+        toast.success('You are already a driver.');
         return;
       }
       await driverRegister(formData).unwrap();
@@ -51,27 +55,36 @@ export default function DProfile() {
     setIsModalOpen(false);
   };
 
+  const handleEditSubmit = async (formData: any) => {
+    console.log(formData)
+    try {
+
+      await updateProfile({ id: selectedDriver._id, ...formData }).unwrap();
+      toast.success("Update profile successfully!");
+      setIsEditModalOpen(false);
+      setSelectedDriver(null);
+    } catch (err) {
+      console.error(err);
+      toast.error("Update profile failed!");
+    }
+  };
+
+
+
   const requested = user?.approvalStatus === 'pending';
   const approved = user?.approvalStatus === 'approved' && user?.role === Role.DRIVER;
-
-
-
-
 
   return (
     <div className="">
       {/* Profile Card */}
       <div className="p-6 bg-white shadow-lg rounded-2xl border border-gray-200">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-
           <div className="space-y-2 text-sm text-gray-700">
             <p><strong>Phone:</strong> {user?.phone}</p>
             <p><strong>Role:</strong> {user?.role}</p>
             <p><strong>Location:</strong> {user?.location?.coordinates?.join(', ')}</p>
             <p><strong>Created:</strong> {new Date(user?.createdAt).toLocaleString()}</p>
           </div>
-
 
           <div className="flex flex-col items-center">
             <div className="w-20 h-20 rounded-full bg-blue-500 text-white flex items-center justify-center text-2xl font-bold mb-3">
@@ -88,7 +101,6 @@ export default function DProfile() {
               {user?.isActive}
             </span>
           </div>
-
 
           <div className="space-y-2 text-sm text-gray-700">
             <p><strong>Phone:</strong> {user?.phone}</p>
@@ -119,7 +131,13 @@ export default function DProfile() {
             </Button>
           )}
 
-          <Button className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-500">
+          <Button
+            onClick={() => {
+              setSelectedDriver(user);
+              setIsEditModalOpen(true);
+            }}
+            className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-500"
+          >
             <Pencil className="h-4 w-4" />
             Edit
           </Button>
@@ -127,7 +145,7 @@ export default function DProfile() {
       </div>
 
       {/* Ride History */}
-      <div className="mt-10 flex ">
+      <div className="mt-10 flex">
         {Rides.length > 0 ? (
           <div className="grid gap-4">
             {Rides.map((ride: any) => <RideCard key={ride._id} ride={ride} />)}
@@ -139,15 +157,21 @@ export default function DProfile() {
         )}
       </div>
 
-      {/* Driver Registration Modal */}
-      {isModalOpen && (
-        <DriverRegistrationModal
-          open={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          onSubmit={handleDriverSubmit}
-          isLoading={false}
-        />
-      )}
+      {/* Modals */}
+      <DriverRegistrationModal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleDriverSubmit}
+        isLoading={isLoading}
+      />
+
+      <DriverEditModal
+        open={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSubmit={handleEditSubmit}
+        driverData={selectedDriver}
+        isLoading={false}
+      />
     </div>
   );
 }

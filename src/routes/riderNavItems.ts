@@ -1,9 +1,10 @@
-import { Home, Settings, UserRoundSearch, Car } from "lucide-react";
+import { Home, Settings, UserRoundSearch, Car, UserRound } from "lucide-react";
 import type { ISidebarItem } from "@/types";
 import Setting from "@/components/modules/dashboard/Setting";
 import RHome from "@/components/modules/dashboard/Rider/Home";
 import FindADriver from "@/components/modules/dashboard/Rider/FindADriver";
 import MyRide from "@/components/modules/dashboard/Rider/MyRide";
+import DProfile from '@/components/modules/dashboard/driver/DProfile';
 
 export const riderNavItems: ISidebarItem[] = [
   {
@@ -35,6 +36,13 @@ export const riderNavItems: ISidebarItem[] = [
   {
     section: "Settings",
     items: [
+      {
+        id: "profile",
+        label: "Profile",
+        path: "profile",
+        icon: UserRound,
+        component: DProfile,
+      },
       {
         id: "settings",
         label: "Settings",

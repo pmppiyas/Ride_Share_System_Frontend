@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
+import { useOutletContext } from "react-router";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +16,15 @@ import type { Driver } from '@/types';
 const Drivers = () => {
   const [currentDPage, setCurrentDPage] = useState(1);
   const [currentRDPage, setCurrentRDPage] = useState(1);
+
+  const { selectedPeriod, search, sort } = useOutletContext<{
+    selectedPeriod: string;
+    search: string;
+    sort: 'asc' | 'desc';
+  }>();
+
+  console.log(selectedPeriod, search, sort);
+
 
   const { data: drivers, isLoading: driverLoading } = useGetDriversQuery({
     limit: "6",
