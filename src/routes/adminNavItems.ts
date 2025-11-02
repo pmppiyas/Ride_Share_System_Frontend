@@ -1,16 +1,17 @@
+import AProfile from "@/components/modules/dashboard/admin/AProfile";
 import DashboardHome from "@/components/modules/dashboard/admin/DashboardHome";
-import Drivers from '@/components/modules/dashboard/admin/Driver';
+import Drivers from "@/components/modules/dashboard/admin/Driver";
 import Rider from "@/components/modules/dashboard/admin/Riders";
 import Rides from "@/components/modules/dashboard/admin/Rides";
 import Setting from "@/components/modules/dashboard/Setting";
 import {
-  Home,
-  Car,
-  Route,
-  User,
   BarChart3,
+  Car,
   CreditCard,
+  Home,
+  Route,
   Settings,
+  User,
 } from "lucide-react";
 export const adminNavItems = [
   {
@@ -72,6 +73,13 @@ export const adminNavItems = [
   {
     section: "Settings",
     items: [
+      {
+        id: "profile",
+        label: "Profile",
+        path: "profile",
+        icon: User,
+        component: AProfile,
+      },
       {
         id: "settings",
         label: "Settings",

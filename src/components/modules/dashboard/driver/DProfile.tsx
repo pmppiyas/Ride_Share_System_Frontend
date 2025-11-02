@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Pencil, CarFront, Check } from 'lucide-react';
-import { Link } from 'react-router';
-import { DriverRegistrationModal } from '@/components/modules/shared/DriverRequestModal';
-import { toast } from 'sonner';
-import { useAuth } from '@/hooks/useAuth';
-import { useDriverRegisterMutation } from '@/redux/features/driver/driver.api';
-import { Role, type IError } from '@/types';
-import { useGetMyRidesQuery } from '@/redux/features/ride/ride.api';
 import RideCard from '@/components/modules/dashboard/admin/RideCard';
+import { DriverRegistrationModal } from '@/components/modules/shared/DriverRequestModal';
 import { DriverEditModal } from '@/components/modules/shared/EditProfileModal';
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/hooks/useAuth';
 import { useUpdateProfileMutation } from '@/redux/features/auth/auth.api';
+import { useDriverRegisterMutation } from '@/redux/features/driver/driver.api';
+import { useGetMyRidesQuery } from '@/redux/features/ride/ride.api';
+import { Role, type IError } from '@/types';
+import { CarFront, Check, Pencil } from 'lucide-react';
+import { useState } from 'react';
+import { Link } from 'react-router';
+import { toast } from 'sonner';
 
 export default function DProfile() {
   const { me, isError } = useAuth();

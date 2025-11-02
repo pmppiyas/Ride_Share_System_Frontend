@@ -1,8 +1,8 @@
-import { Home, Settings, UserRound, PhoneIncoming } from "lucide-react";
-import DHome from "@/components/modules/dashboard/driver/Home";
 import DProfile from "@/components/modules/dashboard/driver/DProfile";
 import DSetting from "@/components/modules/dashboard/driver/DSetting";
 import DriveRequest from "@/components/modules/dashboard/driver/DriveRequest";
+import DHome from "@/components/modules/dashboard/driver/Home";
+import { Home, PhoneIncoming, Settings, UserRound } from "lucide-react";
 
 export const driverNavItems = [
   {
