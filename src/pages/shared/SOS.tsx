@@ -17,6 +17,7 @@ export function EmergencySOS() {
       (loc: Location) => {
         toast.success("Your Location Sended, We are helping as soon as possible.");
         setLocation(loc);
+        console.log(location);
       },
       () => toast.error("Location access denied")
     );

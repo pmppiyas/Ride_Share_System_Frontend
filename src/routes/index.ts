@@ -4,6 +4,7 @@ import Signup from "@/components/modules/auth/Signup";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import { checkAuth } from "@/middleware/checkAuth";
 import AboutUs from "@/pages/shared/AboutUs";
+import Features from "@/pages/shared/Features";
 import Home from "@/pages/shared/Home";
 import { adminNavItems } from "@/routes/adminNavItems";
 import { driverNavItems } from "@/routes/driverNavItems";
@@ -32,6 +33,10 @@ export const router = createBrowserRouter([
       {
         path: "about_us",
         Component: AboutUs,
+      },
+      {
+        path: "features",
+        Component: Features,
       },
     ],
   },

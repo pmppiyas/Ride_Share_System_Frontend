@@ -1,5 +1,4 @@
-import { Link, useNavigate } from "react-router";
-import { Menu } from "lucide-react";
+import Logo from "@/assets/icons/Logo";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -14,12 +13,13 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import Logo from "@/assets/icons/Logo";
 import { useAuth } from "@/hooks/useAuth";
-import { toast } from "sonner";
+import { useLogoutMutation } from '@/redux/features/auth/auth.api';
 import { Role } from "@/types";
 import { getRolebasedLinks } from '@/utils/getRolebaseLinks';
-import { useLogoutMutation } from '@/redux/features/auth/auth.api';
+import { Menu } from "lucide-react";
+import { Link, useNavigate } from "react-router";
+import { toast } from "sonner";
 
 interface NavbarProps {
   auth?: {
@@ -46,8 +46,9 @@ const Navbar = ({
     ...(role === Role.RIDER
       ? [{ title: "Get Ride", url: "/rider/find_driver" }]
       : []),
-    { title: "Dashboard", url: getRolebasedLinks(role) },
+    { title: "Dashboard", url: getRolebasedLinks(role) }, { title: "Features", url: "/features" },
     { title: "About Us", url: "/about_us" }
+
   ];
 
   const navigate = useNavigate();
@@ -160,3 +161,4 @@ const Navbar = ({
 };
 
 export { Navbar };
+

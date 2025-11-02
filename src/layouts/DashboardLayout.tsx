@@ -2,9 +2,8 @@
 import { useState, useEffect } from 'react';
 import { Link, Outlet, useLocation } from "react-router";
 import {
-  Bell,
+
   Search,
-  Filter,
   Menu,
   UserPlus,
   AlertTriangle,
@@ -50,16 +49,16 @@ const DashboardLayoutContent = () => {
     setActiveSection(location.pathname);
   }, [location]);
 
-  const [open, setOpen] = useState(false);
-  const [geoLocation, setGeoLocation] = useState<Location | null>(null);
+
 
   const handleSOS = async () => {
-    setOpen(false);
+
 
     getCurrentLocation(
       (loc: Location) => {
+        console.log(loc)
         toast.success("Your Location Sended, We are helping as soon as possible.");
-        setGeoLocation(loc);
+
       },
       () => toast.error("Location access denied")
     );

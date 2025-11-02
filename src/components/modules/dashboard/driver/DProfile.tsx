@@ -21,7 +21,7 @@ export default function DProfile() {
   const [selectedDriver, setSelectedDriver] = useState<any>(null);
 
   const [driverRegister, { isLoading }] = useDriverRegisterMutation();
-  const [updateProfile, { isLoading: updateLoading }] = useUpdateProfileMutation();
+  const [updateProfile] = useUpdateProfileMutation();
   const { data, isLoading: RLoading } = useGetMyRidesQuery({ limit: '3' });
 
   if (isError) toast.error('Failed to fetch user data. Please try again.');
