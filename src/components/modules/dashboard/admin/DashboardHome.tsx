@@ -1,47 +1,64 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from '@/components/ui/card';
-import { DollarSign, Navigation, Star, TrendingUp, UserCheck, Clock, Activity } from "lucide-react"
-import { Button } from '@/components/ui/button';
-import { AreaChart, Area, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import RideCard from '@/components/modules/dashboard/admin/RideCard';
+import { Button } from '@/components/ui/button';
+import {
+  Card, CardContent, CardDescription, CardHeader, CardTitle,
+} from '@/components/ui/card';
+import { useGetDriversQuery } from '@/redux/features/driver/driver.api';
 import { useGetRidesQuery } from '@/redux/features/ride/ride.api';
-import { useNavigate } from "react-router"
+import {
+  Activity, Clock, DollarSign, Navigation, Star, TrendingUp, UserCheck,
+} from 'lucide-react';
+import { useNavigate } from 'react-router';
+import {
+  Area, AreaChart, CartesianGrid, Cell, Legend, Pie, PieChart,
+  ResponsiveContainer, Tooltip, XAxis, YAxis,
+} from 'recharts';
 
 export default function DashboardHome() {
   const navigate = useNavigate();
-  const { data, isLoading, isError } = useGetRidesQuery({
-    limit: "3",
-  });
+  const { data, isLoading, isError } = useGetRidesQuery({ limit: '3' });
+  const { data: drivers } = useGetDriversQuery(undefined)
 
   if (isLoading) return <div className="p-6">Loading rides...</div>;
   if (isError) return <div className="p-6 text-red-500">Failed to load rides.</div>;
+  console.log("Drivers=> ", drivers)
 
+  const rides = data?.rides || [];
+  const summary = data?.summary || {};
+  const totalRevenue = summary.totalRevenue || 0;
+  const statusCounts = summary.statusCounts || {};
+  const totalDrivers = drivers.meta.total || 0
 
-  const rideStatusData = [
-    { name: 'Completed', value: 324, color: '#10b981' },
-    { name: 'In Progress', value: 42, color: '#f59e0b' },
-    { name: 'Cancelled', value: 18, color: '#ef4444' },
-    { name: 'Pending', value: 8, color: '#8b5cf6' }
-  ];
-
+  const rideStatusData = Object.entries(statusCounts).map(([status, value]) => ({
+    name: status.charAt(0).toUpperCase() + status.slice(1),
+    value,
+    color:
+      status === 'completed'
+        ? '#10b981'
+        : status === 'in-progress'
+          ? '#f59e0b'
+          : status === 'cancelled'
+            ? '#ef4444'
+            : '#8b5cf6',
+  }));
 
 
   const revenueData = [
-    { name: 'Mon', revenue: 4500, rides: 45 },
-    { name: 'Tue', revenue: 5200, rides: 52 },
-    { name: 'Wed', revenue: 4800, rides: 48 },
-    { name: 'Thu', revenue: 6100, rides: 61 },
-    { name: 'Fri', revenue: 7300, rides: 73 },
-    { name: 'Sat', revenue: 8900, rides: 89 },
-    { name: 'Sun', revenue: 6700, rides: 67 }
+    { name: 'Mon', revenue: 4500 },
+    { name: 'Tue', revenue: 5200 },
+    { name: 'Wed', revenue: 4800 },
+    { name: 'Thu', revenue: 6100 },
+    { name: 'Fri', revenue: 7300 },
+    { name: 'Sat', revenue: 8900 },
+    { name: 'Sun', revenue: 6700 },
   ];
-
-
 
   return (
     <div className="p-6 space-y-6">
-      {/* Stats Overview */}
+      {/* 📊 Stats Overview */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {/* Total Revenue */}
         <Card className="relative overflow-hidden border-l-4 border-l-green-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
@@ -50,13 +67,16 @@ export default function DashboardHome() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">৳45,231</div>
+            <div className="text-2xl font-bold text-green-600">
+              ৳{totalRevenue.toLocaleString()}
+            </div>
             <p className="text-xs text-muted-foreground mt-1">
               <span className="text-green-600 font-medium">↗ +20.1%</span> from last month
             </p>
           </CardContent>
         </Card>
 
+        {/* Active Rides */}
         <Card className="relative overflow-hidden border-l-4 border-l-blue-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Active Rides</CardTitle>
@@ -65,13 +85,16 @@ export default function DashboardHome() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">42</div>
+            <div className="text-2xl font-bold text-blue-600">
+              {statusCounts['in-progress'] || 0}
+            </div>
             <p className="text-xs text-muted-foreground mt-1">
               <span className="text-blue-600 font-medium">↗ +15.3%</span> from yesterday
             </p>
           </CardContent>
         </Card>
 
+        {/* Online Drivers (placeholder or from separate API) */}
         <Card className="relative overflow-hidden border-l-4 border-l-purple-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Online Drivers</CardTitle>
@@ -80,13 +103,14 @@ export default function DashboardHome() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-purple-600">287</div>
+            <div className="text-2xl font-bold text-purple-600">{totalDrivers}</div>
             <p className="text-xs text-muted-foreground mt-1">
               <span className="text-purple-600 font-medium">↗ +12.5%</span> from last hour
             </p>
           </CardContent>
         </Card>
 
+        {/* Average Rating (could be fetched from backend later) */}
         <Card className="relative overflow-hidden border-l-4 border-l-yellow-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Avg Rating</CardTitle>
@@ -103,8 +127,9 @@ export default function DashboardHome() {
         </Card>
       </div>
 
-      {/* Charts Section */}
+      {/* 📈 Charts Section */}
       <div className="grid gap-6 lg:grid-cols-7">
+        {/* Revenue Analytics */}
         <Card className="lg:col-span-4">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -129,7 +154,7 @@ export default function DashboardHome() {
                   contentStyle={{
                     backgroundColor: 'hsl(var(--card))',
                     border: '1px solid hsl(var(--border))',
-                    borderRadius: '8px'
+                    borderRadius: '8px',
                   }}
                 />
                 <Area
@@ -145,6 +170,7 @@ export default function DashboardHome() {
           </CardContent>
         </Card>
 
+        {/* Ride Status Pie Chart */}
         <Card className="lg:col-span-3">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -177,7 +203,7 @@ export default function DashboardHome() {
         </Card>
       </div>
 
-      {/* Recent Activity */}
+      {/* 🕒 Recent Activity */}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -188,19 +214,21 @@ export default function DashboardHome() {
               </CardTitle>
               <CardDescription>Latest ride requests and completions</CardDescription>
             </div>
-            <Button onClick={() => navigate("/admin/rides")} variant="outline" size="sm">
+            <Button onClick={() => navigate('/admin/rides')} variant="outline" size="sm">
               View All
             </Button>
           </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {data.rides.map((ride: any) => (
-              <RideCard key={ride._id} ride={ride} />
-            ))}
+            {rides.length ? (
+              rides.map((ride: any) => <RideCard key={ride._id} ride={ride} />)
+            ) : (
+              <p className="text-sm text-muted-foreground">No rides found.</p>
+            )}
           </div>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
