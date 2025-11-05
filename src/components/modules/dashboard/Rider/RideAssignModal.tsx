@@ -8,8 +8,8 @@ import {
 } from "@/components/ui/dialog";
 import { useRideRequestMutation } from "@/redux/features/ride/ride.api";
 import type { Driver, FindDriverPayload, IError } from "@/types";
+import { useNavigate } from 'react-router';
 import { toast } from "sonner";
-
 interface DriverModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -24,10 +24,11 @@ export const RideAssignModal: React.FC<DriverModalProps> = ({
   location,
 }) => {
   const [rideRequest, { isLoading }] = useRideRequestMutation();
-
+  const navigate = useNavigate()
   if (!driver) return null;
 
   const handleConfirm = async () => {
+
     try {
       const payload = {
         pickupLocation: location.pickupLocation,
@@ -36,6 +37,7 @@ export const RideAssignModal: React.FC<DriverModalProps> = ({
       };
 
       await rideRequest(payload).unwrap();
+      navigate("/rider/my_rides")
       toast.success(`Ride request sent to ${driver.name}`);
       onClose();
     } catch (err) {

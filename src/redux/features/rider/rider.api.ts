@@ -9,7 +9,15 @@ export const riderApi = baseApi.injectEndpoints({
         data: payload,
       }),
     }),
+
+    getMyRideHistory: builder.query({
+      query: () => ({
+        url: "/user/meta",
+        method: "GET",
+      }),
+      transformResponse: (data) => data.data,
+    }),
   }),
 });
 
-export const { useFindDriverMutation } = riderApi;
+export const { useFindDriverMutation, useGetMyRideHistoryQuery } = riderApi;

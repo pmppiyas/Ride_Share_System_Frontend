@@ -1,25 +1,26 @@
-
-import { useState } from "react";
 import RideCard from "@/components/modules/dashboard/ride/RideCard";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import Loading from "@/components/modules/dashboard/Rider/Loading";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   useGetMyRidesQuery,
-  useSetRideStatusMutation,
+  useToggleStatusMutation,
 } from "@/redux/features/ride/ride.api";
 import { type IError, type Ride } from "@/types";
+import { RideStatusEnum } from "@/types/ride.types";
+import { useState } from "react";
 import { toast } from "sonner";
-import Loading from "@/components/modules/dashboard/Rider/Loading";
 
 export default function MyRides() {
   const { data, isLoading } = useGetMyRidesQuery(undefined);
-  const [setRideStatus] = useSetRideStatusMutation();
+  const [toggleStatus] = useToggleStatusMutation();
   const [confirmId, setConfirmId] = useState<string | null>(null);
 
   const confirmCancel = async () => {
     if (!confirmId) return;
 
     try {
-      await setRideStatus({ id: confirmId, status: "canceled" }).unwrap();
+      await toggleStatus({ id: confirmId, status: RideStatusEnum.CANCELED }).unwrap();
+
       toast.success("Ride canceled successfully.");
       setConfirmId(null);
     } catch (err) {
@@ -36,8 +37,6 @@ export default function MyRides() {
   if (isLoading) {
     return <Loading title="Rides" />;
   }
-
-  console.log(data);
 
   if (!data || data.rides.length === 0) {
     return (
@@ -83,9 +82,9 @@ export default function MyRides() {
                     key={ride._id}
                     ride={ride}
                     onCancel={
-                      ride.status !== "canceled"
+                      ride.status !== RideStatusEnum.CANCELED
                         ? () => setConfirmId(ride._id)
-                        : () => { }
+                        : undefined
                     }
                   />
                 ))}
@@ -100,7 +99,7 @@ export default function MyRides() {
 
       {/* Confirmation Modal */}
       {confirmId && (
-        <div className="fixed inset-0 z-50 bg-transparent  backdrop-blur-sm flex items-center justify-center">
+        <div className="fixed inset-0 z-50 backdrop-blur-sm flex items-center justify-center">
           <div className="bg-white rounded-lg shadow-lg p-6 w-[90%] max-w-sm">
             <h2 className="text-lg font-semibold mb-4">Confirm Cancellation</h2>
             <p className="text-sm text-muted-foreground mb-6">

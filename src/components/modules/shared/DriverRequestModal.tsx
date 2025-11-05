@@ -1,3 +1,5 @@
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
@@ -13,12 +15,10 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Button } from '@/components/ui/button';
-import { CarFront, Loader2 } from 'lucide-react';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { CarFront, Loader2 } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 const vehicleInfoSchema = z.object({
   type: z.enum(['car', 'bike']),

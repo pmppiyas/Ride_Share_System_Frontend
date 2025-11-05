@@ -1,10 +1,9 @@
 import Loading from '@/components/modules/dashboard/Rider/Loading';
 import { useGetMyDrivesQuery } from '@/redux/features/driver/driver.api';
-import { useSetRideStatusMutation, useToggleStatusMutation } from '@/redux/features/ride/ride.api';
+import { useToggleStatusMutation } from '@/redux/features/ride/ride.api';
 import { RideStatusEnum, type IRideStatus } from '@/types/ride.types';
+
 import { toast } from "sonner";
-
-
 const statusActionsMap: Record<IRideStatus, { label: string; next: RideStatusEnum; color: string }[]> = {
   [RideStatusEnum.REQUESTED]: [
     { label: "Accept", next: RideStatusEnum.ACCEPTED, color: "green" },
@@ -30,10 +29,13 @@ export default function DriveRequest() {
     new Date(b.timestamps.requestedAt).getTime() - new Date(a.timestamps.requestedAt).getTime()
   );
 
+
   const handleAction = async (id: string, status: RideStatusEnum) => {
     try {
       await toggleStatusMutation({ id, status }).unwrap()
+
       toast.success(`Ride ${status} successfully.`);
+
     } catch (err) {
       console.error(err);
       toast.error(`Ride ${status} unsuccessfully.`);
