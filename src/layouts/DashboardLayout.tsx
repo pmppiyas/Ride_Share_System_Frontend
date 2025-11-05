@@ -1,27 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect } from 'react';
-import { Link, Outlet, useLocation } from "react-router";
-import {
-
-  Search,
-  Menu,
-  UserPlus,
-  AlertTriangle,
-  Zap,
-  Globe,
-} from 'lucide-react';
+import ProfileBadge from '@/components/modules/auth/ProfileBadge';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Navbar } from '@/pages/shared/Navbar';
-import ProfileBadge from '@/components/modules/auth/ProfileBadge';
-import { getNavItems } from '@/utils/getNavItems';
 import { useAuth } from '@/hooks/useAuth';
-import { getRolebasedLinks } from '@/utils/getRolebaseLinks';
-import { getCurrentLocation, type Location } from '@/utils/GetCurrentLocation';
-import { toast } from "sonner";
+import { Navbar } from '@/pages/shared/Navbar';
 import { DashboardProvider } from '@/provider/dashboard.provider';
+import { getCurrentLocation, type Location } from '@/utils/GetCurrentLocation';
+import { getNavItems } from '@/utils/getNavItems';
+import { getRolebasedLinks } from '@/utils/getRolebaseLinks';
+import {
+  AlertTriangle,
+  Globe,
+  Menu,
+  Search,
+  UserPlus,
+  Zap,
+} from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Link, Outlet, useLocation } from "react-router";
+import { toast } from "sonner";
 
 const DashboardLayoutContent = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);

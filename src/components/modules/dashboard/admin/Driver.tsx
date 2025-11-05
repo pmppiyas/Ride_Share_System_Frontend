@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useOutletContext } from "react-router";
-import { useState } from "react";
+import DriverRequestAction from '@/components/modules/shared/DriverRequestAction';
+import TourPagination from "@/components/modules/shared/TourPagination";
 import { Button } from "@/components/ui/button";
 import {
+  useDriverReqHandleMutation,
   useGetDriverRequestQuery,
   useGetDriversQuery,
-  useDriverReqHandleMutation,
 } from "@/redux/features/driver/driver.api";
-import TourPagination from "@/components/modules/shared/TourPagination";
-import DriverRequestAction from '@/components/modules/shared/DriverRequestAction';
-import { toast } from "sonner";
 import type { Driver } from '@/types';
+import { useState } from "react";
+import { useOutletContext } from "react-router";
+import { toast } from "sonner";
 
 
 const Drivers = () => {

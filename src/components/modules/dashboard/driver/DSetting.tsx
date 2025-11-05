@@ -36,6 +36,6 @@ export default function DSetting() {
         <span>{isOnline ? "Online" : "Offline"}</span>
       </div>
 
-    </div>s
+    </div>
   );
 }

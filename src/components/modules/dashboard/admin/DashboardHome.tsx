@@ -2,34 +2,53 @@
 import RideCard from '@/components/modules/dashboard/admin/RideCard';
 import { Button } from '@/components/ui/button';
 import {
-  Card, CardContent, CardDescription, CardHeader, CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from '@/components/ui/card';
+import { useMetadataQuery } from '@/redux/features/auth/auth.api';
 import { useGetDriversQuery } from '@/redux/features/driver/driver.api';
-import { useGetRidesQuery } from '@/redux/features/ride/ride.api';
 import {
-  Activity, Clock, DollarSign, Navigation, Star, TrendingUp, UserCheck,
+  Activity,
+  Clock,
+  DollarSign,
+  Navigation,
+  Star,
+  TrendingUp,
+  UserCheck,
 } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import {
-  Area, AreaChart, CartesianGrid, Cell, Legend, Pie, PieChart,
-  ResponsiveContainer, Tooltip, XAxis, YAxis,
+  Area,
+  AreaChart,
+  CartesianGrid,
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from 'recharts';
 
 export default function DashboardHome() {
   const navigate = useNavigate();
-  const { data, isLoading, isError } = useGetRidesQuery({ limit: '3' });
-  const { data: drivers } = useGetDriversQuery(undefined);
+  const { data: metadata, isLoading, isError } = useMetadataQuery(undefined);
+  const { data: admin } = useMetadataQuery(undefined);
 
-  if (isLoading) return <div className="p-6">Loading rides...</div>;
-  if (isError) return <div className="p-6 text-red-500">Failed to load rides.</div>;
+  if (isLoading) return <div className="p-6">Loading dashboard...</div>;
+  if (isError) return <div className="p-6 text-red-500">Failed to load dashboard.</div>;
 
-  const rides = data?.rides || [];
-  const summary = data?.summary || {};
+
+  const rides = metadata?.data || [];
+  const summary = metadata?.summary || {};
   const totalRevenue = summary.totalRevenue || 0;
   const statusCounts = summary.statusCounts || {};
-  const activeRides = statusCounts['in-progress'] || 0;
-  const totalDrivers = drivers?.meta?.total || 0;
-
+  const activeRides = statusCounts['in_transit'] || 0;
+  const totalDrivers = admin?.meta?.totalDriver || 0;
 
   const rideStatusData = Object.entries(statusCounts).map(([status, value]) => ({
     name: status.charAt(0).toUpperCase() + status.slice(1),
@@ -37,22 +56,28 @@ export default function DashboardHome() {
     color:
       status === 'completed'
         ? '#10b981'
-        : status === 'in-progress'
+        : status === 'in_transit'
           ? '#f59e0b'
-          : status === 'cancelled'
+          : status === 'canceled'
             ? '#ef4444'
             : '#8b5cf6',
   }));
 
-  const revenueData = [
-    { name: 'Mon', revenue: 4500 },
-    { name: 'Tue', revenue: 5200 },
-    { name: 'Wed', revenue: 4800 },
-    { name: 'Thu', revenue: 6100 },
-    { name: 'Fri', revenue: 7300 },
-    { name: 'Sat', revenue: 8900 },
-    { name: 'Sun', revenue: 6700 },
-  ];
+
+  const weeklyRevenue = summary.weeklyStats
+    ? Object.entries(summary.weeklyStats).map(([day, count]) => ({
+      name: day,
+      revenue: count * 500,
+    }))
+    : [
+      { name: 'Mon', revenue: 0 },
+      { name: 'Tue', revenue: 0 },
+      { name: 'Wed', revenue: 0 },
+      { name: 'Thu', revenue: 0 },
+      { name: 'Fri', revenue: 0 },
+      { name: 'Sat', revenue: 0 },
+      { name: 'Sun', revenue: 0 },
+    ];
 
   return (
     <div className="p-6 space-y-6">
@@ -60,16 +85,14 @@ export default function DashboardHome() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {/* Total Revenue */}
         <Card className="relative overflow-hidden border-l-4 border-l-green-500">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardHeader className="flex items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
             <div className="p-2 bg-green-100 rounded-full">
               <DollarSign className="h-4 w-4 text-green-600" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">
-              ৳{totalRevenue.toLocaleString()}
-            </div>
+            <div className="text-2xl font-bold text-green-600">৳{totalRevenue.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground mt-1">
               <span className="text-green-600 font-medium">↗ +20.1%</span> from last month
             </p>
@@ -78,16 +101,14 @@ export default function DashboardHome() {
 
         {/* Active Rides */}
         <Card className="relative overflow-hidden border-l-4 border-l-blue-500">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardHeader className="flex items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Active Rides</CardTitle>
             <div className="p-2 bg-blue-100 rounded-full">
               <Navigation className="h-4 w-4 text-blue-600" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">
-              {activeRides}
-            </div>
+            <div className="text-2xl font-bold text-blue-600">{activeRides}</div>
             <p className="text-xs text-muted-foreground mt-1">
               <span className="text-blue-600 font-medium">↗ +15.3%</span> from yesterday
             </p>
@@ -96,7 +117,7 @@ export default function DashboardHome() {
 
         {/* Online Drivers */}
         <Card className="relative overflow-hidden border-l-4 border-l-purple-500">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardHeader className="flex items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Online Drivers</CardTitle>
             <div className="p-2 bg-purple-100 rounded-full">
               <UserCheck className="h-4 w-4 text-purple-600" />
@@ -112,7 +133,7 @@ export default function DashboardHome() {
 
         {/* Avg Rating */}
         <Card className="relative overflow-hidden border-l-4 border-l-yellow-500">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardHeader className="flex items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Avg Rating</CardTitle>
             <div className="p-2 bg-yellow-100 rounded-full">
               <Star className="h-4 w-4 text-yellow-600" />
@@ -140,7 +161,7 @@ export default function DashboardHome() {
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={revenueData}>
+              <AreaChart data={weeklyRevenue}>
                 <defs>
                   <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
@@ -157,14 +178,7 @@ export default function DashboardHome() {
                     borderRadius: '8px',
                   }}
                 />
-                <Area
-                  type="monotone"
-                  dataKey="revenue"
-                  stroke="#3b82f6"
-                  fillOpacity={1}
-                  fill="url(#revenueGradient)"
-                  strokeWidth={2}
-                />
+                <Area type="monotone" dataKey="revenue" stroke="#3b82f6" fillOpacity={1} fill="url(#revenueGradient)" strokeWidth={2} />
               </AreaChart>
             </ResponsiveContainer>
           </CardContent>

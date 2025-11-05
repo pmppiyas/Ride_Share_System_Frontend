@@ -45,6 +45,14 @@ export const authApi = baseApi.injectEndpoints({
         };
       },
     }),
+
+    metadata: builder.query({
+      query: () => ({
+        url: "/user/meta",
+        method: "GET",
+      }),
+      transformResponse: (data) => data.data,
+    }),
   }),
 });
 
@@ -54,4 +62,5 @@ export const {
   useGetMeQuery,
   useLogoutMutation,
   useUpdateProfileMutation,
+  useMetadataQuery,
 } = authApi;
