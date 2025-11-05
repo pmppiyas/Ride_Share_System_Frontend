@@ -1,11 +1,11 @@
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { useRideRequestMutation } from "@/redux/features/ride/ride.api";
 import type { Driver, FindDriverPayload, IError } from "@/types";
 import { toast } from "sonner";

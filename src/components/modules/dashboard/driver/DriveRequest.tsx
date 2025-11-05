@@ -1,32 +1,47 @@
-import Loading from '@/components/modules/dashboard/Rider/Loading'
-import { useGetMyDrivesQuery } from '@/redux/features/driver/driver.api'
-import { useSetRideStatusMutation } from '@/redux/features/ride/ride.api'
+import Loading from '@/components/modules/dashboard/Rider/Loading';
+import { useGetMyDrivesQuery } from '@/redux/features/driver/driver.api';
+import { useSetRideStatusMutation, useToggleStatusMutation } from '@/redux/features/ride/ride.api';
+import { RideStatusEnum, type IRideStatus } from '@/types/ride.types';
 import { toast } from "sonner";
 
+
+const statusActionsMap: Record<IRideStatus, { label: string; next: RideStatusEnum; color: string }[]> = {
+  [RideStatusEnum.REQUESTED]: [
+    { label: "Accept", next: RideStatusEnum.ACCEPTED, color: "green" },
+    { label: "Reject", next: RideStatusEnum.CANCELED, color: "red" },
+  ],
+  [RideStatusEnum.ACCEPTED]: [
+    { label: "Pick Up", next: RideStatusEnum.PICKED_UP, color: "blue" },
+  ],
+  [RideStatusEnum.PICKED_UP]: [
+    { label: "Start Ride", next: RideStatusEnum.IN_TRANSIT, color: "purple" },
+  ],
+  [RideStatusEnum.IN_TRANSIT]: [
+    { label: "Complete", next: RideStatusEnum.COMPLETED, color: "gray" },
+  ],
+  [RideStatusEnum.COMPLETED]: [],
+  [RideStatusEnum.CANCELED]: [],
+};
+
 export default function DriveRequest() {
-  const { data, isLoading } = useGetMyDrivesQuery(null)
-
-  const [setRideStatus] = useSetRideStatusMutation()
-
+  const { data, isLoading } = useGetMyDrivesQuery(null);
+  const [toggleStatusMutation] = useToggleStatusMutation()
   const sortedDrives = data?.slice().sort((a, b) =>
     new Date(b.timestamps.requestedAt).getTime() - new Date(a.timestamps.requestedAt).getTime()
-  )
+  );
+
+  const handleAction = async (id: string, status: RideStatusEnum) => {
+    try {
+      await toggleStatusMutation({ id, status }).unwrap()
+      toast.success(`Ride ${status} successfully.`);
+    } catch (err) {
+      console.error(err);
+      toast.error(`Ride ${status} unsuccessfully.`);
+    }
+  };
 
   if (isLoading) {
-    return <Loading title='Drive Request' />
-  }
-
-  const handleAction = async (id: string, status: string) => {
-    try {
-      console.log(status)
-      await setRideStatus({ id, status }).unwrap();
-      toast.success(`Ride ${status} successfully.`)
-    }
-    catch (err) {
-      console.log(err)
-      toast.error(`Ride ${status} unsuccessfull.`)
-    }
-
+    return <Loading title='Drive Request' />;
   }
 
   return (
@@ -54,39 +69,17 @@ export default function DriveRequest() {
                 <td className='px-4 py-2'>{drive.fare.toFixed(2)}</td>
                 <td className='px-4 py-2 capitalize'>{drive.status}</td>
                 <td className='px-4 py-2'>
-                  {drive.status === 'requested' ? (
-                    <div className='flex gap-2'>
-                      <button onClick={() => handleAction(drive._id, "accepted")} className='px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600'>
-                        {isLoading ? "Accepting" : "Accept"}
-                      </button>
-                      <button onClick={() => handleAction(drive._id, "rejected")} className='px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600'>
-                        Reject
-                      </button>
-                    </div>
-                  ) : (
-                    ""
-                  )}
-
-                  {
-                    !["completed", "accepted", "canceled", "requested"].includes(drive.status) && (
+                  <div className='flex gap-2 flex-wrap'>
+                    {statusActionsMap[drive.status as RideStatusEnum]?.map((action) => (
                       <button
-                        onClick={() => handleAction(drive._id, "completed")}
-                        className='px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600'
+                        key={action.next}
+                        onClick={() => handleAction(drive._id, action.next)}
+                        className={`px-3 py-1 bg-${action.color}-500 text-white rounded hover:bg-${action.color}-600`}
                       >
-                        Make finish
+                        {action.label}
                       </button>
-                    )
-                  }
-
-
-                  {/* {["accepted", "picked_up", "in_transit"].includes(drive.status) && (
-                    <button
-                      onClick={() => handleAction(drive._id, "completed")}
-                      className='px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600'
-                    >
-                      Make finish
-                    </button>
-                  )} */}
+                    ))}
+                  </div>
                 </td>
               </tr>
             ))}
@@ -94,5 +87,5 @@ export default function DriveRequest() {
         </table>
       </div>
     </div>
-  )
+  );
 }

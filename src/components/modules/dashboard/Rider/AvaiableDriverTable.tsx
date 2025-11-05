@@ -1,7 +1,7 @@
-import React from "react";
-import { Search } from "lucide-react"; // or wherever your icon comes from
 import DriverTableRow from '@/components/modules/dashboard/Rider/DriverTableRow';
 import type { Driver } from '@/types/driver.types';
+import { Search } from "lucide-react"; // or wherever your icon comes from
+import React from "react";
 
 interface AvailableDriversPanelProps {
   availableDrivers: Driver[];

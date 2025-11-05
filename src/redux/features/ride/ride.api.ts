@@ -32,13 +32,25 @@ export const rideApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["RIDE"],
     }),
-    setRideStatus: builder.mutation({
+
+    toggleStatus: builder.mutation({
       query: ({ id, status }) => ({
-        url: `/ride/set-status/${id}`,
-        method: "PUT",
-        data: { status },
+        url: `/ride/set-status/${id}/${status}`,
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
       }),
       invalidatesTags: ["RIDE"],
+    }),
+
+    getMyDrives: builder.query({
+      query: () => ({
+        url: "ride/my-drives",
+        method: "GET",
+      }),
+      transformResponse: (res) => res.data,
+      providesTags: ["RIDE"],
     }),
   }),
 });
@@ -48,4 +60,6 @@ export const {
   useGetMyRidesQuery,
   useRideRequestMutation,
   useSetRideStatusMutation,
+  useGetMyDrivesQuery,
+  useToggleStatusMutation,
 } = rideApi;

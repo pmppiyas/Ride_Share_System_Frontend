@@ -1,7 +1,7 @@
-import React from "react";
 import { Button } from "@/components/ui/button";
-import { MapPin, Navigation, RotateCcw, Search, Loader2 } from "lucide-react";
 import type { SelectingMode } from "@/types";
+import { Loader2, MapPin, Navigation, RotateCcw, Search } from "lucide-react";
+import React from "react";
 
 interface DriverActionsPanelProps {
   selecting: SelectingMode;

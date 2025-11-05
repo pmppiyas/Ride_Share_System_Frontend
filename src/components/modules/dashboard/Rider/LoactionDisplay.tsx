@@ -1,6 +1,6 @@
-import React from "react";
 import type { LocationDisplayProps, SelectingMode } from "@/types";
 import { formatCoordinates } from "@/utils/FormateCoordinates";
+import React from "react";
 
 const getColorClass = (type: SelectingMode) =>
   type === "pickup" ? "text-green-600" : "text-red-600";

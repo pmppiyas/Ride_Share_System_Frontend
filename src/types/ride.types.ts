@@ -30,7 +30,7 @@ export interface RideCardProps {
   onCancel: () => void;
 }
 
-export const IRideStatus = {
+const IRideStatus = {
   REQUESTED: "requested",
   ACCEPTED: "accepted",
   PICKED_UP: "picked_up",
@@ -38,5 +38,18 @@ export const IRideStatus = {
   COMPLETED: "completed",
   CANCELED: "canceled",
 } as const;
+
+export const RideStatusEnum = {
+  REQUESTED: "requested",
+  ACCEPTED: "accepted",
+  PICKED_UP: "picked_up",
+  IN_TRANSIT: "in_transit",
+  COMPLETED: "completed",
+  CANCELED: "canceled",
+} as const;
+
+// ✅ Type for safety and autocompletion
+export type RideStatusEnum =
+  (typeof RideStatusEnum)[keyof typeof RideStatusEnum];
 
 export type IRideStatus = (typeof IRideStatus)[keyof typeof IRideStatus];

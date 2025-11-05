@@ -18,17 +18,18 @@ import {
 export default function DashboardHome() {
   const navigate = useNavigate();
   const { data, isLoading, isError } = useGetRidesQuery({ limit: '3' });
-  const { data: drivers } = useGetDriversQuery(undefined)
+  const { data: drivers } = useGetDriversQuery(undefined);
 
   if (isLoading) return <div className="p-6">Loading rides...</div>;
   if (isError) return <div className="p-6 text-red-500">Failed to load rides.</div>;
-  console.log("Drivers=> ", drivers)
 
   const rides = data?.rides || [];
   const summary = data?.summary || {};
   const totalRevenue = summary.totalRevenue || 0;
   const statusCounts = summary.statusCounts || {};
-  const totalDrivers = drivers.meta.total || 0
+  const activeRides = statusCounts['in-progress'] || 0;
+  const totalDrivers = drivers?.meta?.total || 0;
+
 
   const rideStatusData = Object.entries(statusCounts).map(([status, value]) => ({
     name: status.charAt(0).toUpperCase() + status.slice(1),
@@ -42,7 +43,6 @@ export default function DashboardHome() {
             ? '#ef4444'
             : '#8b5cf6',
   }));
-
 
   const revenueData = [
     { name: 'Mon', revenue: 4500 },
@@ -86,7 +86,7 @@ export default function DashboardHome() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-blue-600">
-              {statusCounts['in-progress'] || 0}
+              {activeRides}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
               <span className="text-blue-600 font-medium">↗ +15.3%</span> from yesterday
@@ -94,7 +94,7 @@ export default function DashboardHome() {
           </CardContent>
         </Card>
 
-        {/* Online Drivers (placeholder or from separate API) */}
+        {/* Online Drivers */}
         <Card className="relative overflow-hidden border-l-4 border-l-purple-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Online Drivers</CardTitle>
@@ -110,7 +110,7 @@ export default function DashboardHome() {
           </CardContent>
         </Card>
 
-        {/* Average Rating (could be fetched from backend later) */}
+        {/* Avg Rating */}
         <Card className="relative overflow-hidden border-l-4 border-l-yellow-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Avg Rating</CardTitle>
@@ -129,7 +129,7 @@ export default function DashboardHome() {
 
       {/* 📈 Charts Section */}
       <div className="grid gap-6 lg:grid-cols-7">
-        {/* Revenue Analytics */}
+        {/* Revenue Chart */}
         <Card className="lg:col-span-4">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">

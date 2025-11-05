@@ -1,12 +1,12 @@
-import React from "react";
-import { MapContainer, TileLayer, Marker, } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import type { Driver, LocationCoords, MapComponentProps } from '@/types';
-import { getDriverCoordinates } from '@/utils/getDriverLocation';
-import { getDriverKey } from '@/utils/getDriverKey';
-import { LocationSelector } from '@/components/modules/dashboard/Rider/LocationSelector';
 import { MapIcons } from '@/assets/icons/MapIcons';
-import "./animate.css"
+import { LocationSelector } from '@/components/modules/dashboard/Rider/LocationSelector';
+import type { Driver, LocationCoords, MapComponentProps } from '@/types';
+import { getDriverKey } from '@/utils/getDriverKey';
+import { getDriverCoordinates } from '@/utils/getDriverLocation';
+import "leaflet/dist/leaflet.css";
+import React from "react";
+import { MapContainer, Marker, TileLayer, } from "react-leaflet";
+import "./animate.css";
 
 const MapComponent: React.FC<MapComponentProps> = ({
   center = [23.8103, 90.4125],
@@ -25,11 +25,11 @@ const MapComponent: React.FC<MapComponentProps> = ({
   showNearbyDrivers = true
 }) => {
 
-  const handleDriverClick = React.useCallback((driver: Driver): void => {
-    if (onDriverClick && typeof onDriverClick === 'function') {
-      onDriverClick(driver);
-    }
-  }, [onDriverClick]);
+  // const handleDriverClick = React.useCallback((driver: Driver): void => {
+  //   if (onDriverClick && typeof onDriverClick === 'function') {
+  //     onDriverClick(driver);
+  //   }
+  // }, [onDriverClick]);
 
   const handleLocationSelect = React.useCallback((location: LocationCoords): void => {
     if (onLocationSelect && typeof onLocationSelect === 'function') {
@@ -52,7 +52,7 @@ const MapComponent: React.FC<MapComponentProps> = ({
 
   return (
     <>
-      <div className="space-y-3">
+      <div className="space-y-3 ">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-primary">Interactive Map</h3>
           <div className="text-sm text-gray-600">
@@ -141,5 +141,6 @@ const MapComponent: React.FC<MapComponentProps> = ({
 
 export default MapComponent;
 export type {
-  Driver,
+  Driver
 };
+
