@@ -78,6 +78,17 @@ export const authApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["RIDE", "DRIVER"],
     }),
+
+    activeStatus: builder.mutation({
+      query: ({ status }: { status: boolean }) => ({
+        url: `/driver/active_status/${status}`,
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }),
+      invalidatesTags: ["DRIVER"],
+    }),
   }),
 });
 
@@ -90,4 +101,5 @@ export const {
   useGetRideHistoryQuery,
   useGetMyDrivesQuery,
   useSetRideStatusMutation,
+  useActiveStatusMutation,
 } = authApi;
