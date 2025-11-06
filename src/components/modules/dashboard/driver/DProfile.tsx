@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import RideCard from '@/components/modules/dashboard/admin/RideCard';
+import { ChangePasswordModal } from '@/components/modules/shared/ChangePasswordModal';
 import { DriverRegistrationModal } from '@/components/modules/shared/DriverRequestModal';
 import { DriverEditModal } from '@/components/modules/shared/EditProfileModal';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
-import { useUpdateProfileMutation } from '@/redux/features/auth/auth.api';
+import { useResetPasswordMutation, useUpdateProfileMutation } from '@/redux/features/auth/auth.api';
 import { useDriverRegisterMutation } from '@/redux/features/driver/driver.api';
 import { useGetMyRidesQuery } from '@/redux/features/ride/ride.api';
 import { Role, type IError } from '@/types';
-import { CarFront, Check, Pencil } from 'lucide-react';
+import { CarFront, Check, KeyRound, Pencil } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { toast } from 'sonner';
@@ -18,10 +19,12 @@ export default function DProfile() {
   const user = me?.data;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [selectedDriver, setSelectedDriver] = useState<any>(null);
 
   const [driverRegister, { isLoading }] = useDriverRegisterMutation();
   const [updateProfile] = useUpdateProfileMutation();
+  const [resetPassword, { isLoading: isPasswordLoading }] = useResetPasswordMutation();
   const { data, isLoading: RLoading } = useGetMyRidesQuery({ limit: '3' });
 
   if (isError) toast.error('Failed to fetch user data. Please try again.');
@@ -56,9 +59,8 @@ export default function DProfile() {
   };
 
   const handleEditSubmit = async (formData: any) => {
-    console.log(formData)
+    console.log(formData);
     try {
-
       await updateProfile({ id: selectedDriver._id, ...formData }).unwrap();
       toast.success("Update profile successfully!");
       setIsEditModalOpen(false);
@@ -69,7 +71,17 @@ export default function DProfile() {
     }
   };
 
-
+  const handlePasswordChange = async (passwordData: { oldPassword: string; newPassword: string }) => {
+    try {
+      await resetPassword(passwordData).unwrap();
+      toast.success('Password changed successfully!');
+      setIsPasswordModalOpen(false);
+    } catch (err) {
+      console.error(err);
+      const error = err as IError;
+      toast.error(error?.data?.message || 'Password change failed!');
+    }
+  };
 
   const requested = user?.approvalStatus === 'pending';
   const approved = user?.approvalStatus === 'approved' && user?.role === Role.DRIVER;
@@ -141,6 +153,15 @@ export default function DProfile() {
             <Pencil className="h-4 w-4" />
             Edit
           </Button>
+
+          <Button
+            onClick={() => setIsPasswordModalOpen(true)}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <KeyRound className="h-4 w-4" />
+            Change Password
+          </Button>
         </div>
       </div>
 
@@ -171,6 +192,13 @@ export default function DProfile() {
         onSubmit={handleEditSubmit}
         driverData={selectedDriver}
         isLoading={false}
+      />
+
+      <ChangePasswordModal
+        open={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+        onSubmit={handlePasswordChange}
+        isLoading={isPasswordLoading}
       />
     </div>
   );
