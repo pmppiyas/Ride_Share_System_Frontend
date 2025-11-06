@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+
+import { ChangePasswordModal } from '@/components/modules/shared/ChangePasswordModal';
 import { AdminEditModal } from '@/components/modules/shared/EditAdminModal';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
-import { useUpdateProfileMutation } from '@/redux/features/auth/auth.api';
-import { Role, type IError } from '@/types';
-import { Pencil } from 'lucide-react';
+import { useResetPasswordMutation, useUpdateProfileMutation } from '@/redux/features/auth/auth.api';
+import { type IError } from '@/types';
+import { KeyRound, Pencil } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -13,25 +15,40 @@ export default function DProfile() {
   const { me, isError } = useAuth();
   const user = me?.data;
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [selectedAdmin, setSelectedAdmin] = useState<any>(null);
 
-
   const [updateProfile] = useUpdateProfileMutation();
-
+  const [resetPassword, { isLoading: isPasswordLoading }] = useResetPasswordMutation();
 
   if (isError) toast.error('Failed to fetch user data. Please try again.');
 
-
   const handleEditSubmit = async (formData: any) => {
-
+    console.log(formData);
     try {
-      await updateProfile({ id: selectedAdmin._id, ...formData }).unwrap();
+      await updateProfile({
+        id: selectedAdmin._id,
+        ...formData
+      }).unwrap();
       toast.success('Profile updated successfully!');
       setIsEditModalOpen(false);
       setSelectedAdmin(null);
     } catch (err) {
       console.error(err);
-      toast.error('Profile update failed!');
+      const error = err as IError;
+      toast.error(error?.data?.message || 'Profile update failed!');
+    }
+  };
+
+  const handlePasswordChange = async (passwordData: { oldPassword: string; newPassword: string }) => {
+    try {
+      await resetPassword(passwordData).unwrap();
+      toast.success('Password changed successfully!');
+      setIsPasswordModalOpen(false);
+    } catch (err) {
+      console.error(err);
+      const error = err as IError;
+      toast.error(error?.data?.message || 'Password change failed!');
     }
   };
 
@@ -75,20 +92,28 @@ export default function DProfile() {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-wrap justify-between mt-6 gap-3">
+        <div className="flex flex-wrap justify-center mt-6 gap-3">
           <Button
             onClick={() => {
               setSelectedAdmin(user);
               setIsEditModalOpen(true);
             }}
-            className="flex items-center gap-2 bg-primary hover:bg-primary/80 w-2/4 mx-auto"
+            className="flex items-center gap-2 bg-primary hover:bg-primary/80"
           >
             <Pencil className="h-4 w-4" />
-            Edit
+            Edit Profile
+          </Button>
+
+          <Button
+            onClick={() => setIsPasswordModalOpen(true)}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <KeyRound className="h-4 w-4" />
+            Change Password
           </Button>
         </div>
       </div>
-
 
       <AdminEditModal
         open={isEditModalOpen}
@@ -96,6 +121,13 @@ export default function DProfile() {
         onSubmit={handleEditSubmit}
         driverData={selectedAdmin}
         isLoading={false}
+      />
+
+      <ChangePasswordModal
+        open={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+        onSubmit={handlePasswordChange}
+        isLoading={isPasswordLoading}
       />
     </div>
   );

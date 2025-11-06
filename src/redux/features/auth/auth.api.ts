@@ -33,17 +33,21 @@ export const authApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["AUTH"],
     }),
-
     updateProfile: builder.mutation({
-      query: ({ id, ...formData }) => {
-        return {
-          url: `/user/update/${id}`,
-          method: "PATCH",
-          body: JSON.stringify(formData),
-          headers: { "Content-Type": "application/json" },
-          invalidatesTags: ["AUTH"],
-        };
-      },
+      query: ({ id, ...data }) => ({
+        url: `/user/update/${id}`,
+        method: "PATCH",
+        data: data,
+      }),
+      invalidatesTags: ["AUTH"],
+    }),
+
+    resetPassword: builder.mutation({
+      query: (data) => ({
+        url: "/auth/reset-password",
+        method: "POST",
+        data: data,
+      }),
     }),
 
     metadata: builder.query({
@@ -62,5 +66,6 @@ export const {
   useGetMeQuery,
   useLogoutMutation,
   useUpdateProfileMutation,
+  useResetPasswordMutation,
   useMetadataQuery,
 } = authApi;
