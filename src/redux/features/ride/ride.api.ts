@@ -15,15 +15,19 @@ export const rideApi = baseApi.injectEndpoints({
     }),
 
     getMyRides: builder.query({
-      query: () => {
+      query: () => ({
+        url: "/ride/my-rides",
+        method: "GET",
+      }),
+      transformResponse: (res) => {
         return {
-          url: "/ride/my-rides",
-          method: "GET",
+          ...res.data,
+          rides: [...res.data.rides].reverse(),
         };
       },
-      transformResponse: (res) => res.data,
       providesTags: ["RIDE"],
     }),
+
     rideRequest: builder.mutation({
       query: (data) => ({
         url: `/ride/request/${data.driverId}`,
@@ -59,7 +63,6 @@ export const {
   useGetRidesQuery,
   useGetMyRidesQuery,
   useRideRequestMutation,
-  useSetRideStatusMutation,
   useGetMyDrivesQuery,
   useToggleStatusMutation,
 } = rideApi;

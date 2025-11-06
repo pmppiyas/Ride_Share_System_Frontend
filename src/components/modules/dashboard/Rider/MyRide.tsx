@@ -64,18 +64,18 @@ export default function MyRides() {
             <table className="w-full text-sm">
               <thead className="bg-muted/50 border-b">
                 <tr>
-                  <th className="px-4 py-3 text-left">Ride ID</th>
+                  <th className="px-4 py-3 text-left"></th> {/* Status Circle */}
                   <th className="px-4 py-3 text-left">Rider</th>
                   <th className="px-4 py-3 text-left">Driver</th>
                   <th className="px-4 py-3 text-left">Pickup</th>
                   <th className="px-4 py-3 text-left">Destination</th>
                   <th className="px-4 py-3 text-left">Distance</th>
                   <th className="px-4 py-3 text-left">Fare</th>
-                  <th className="px-4 py-3 text-left">Status</th>
                   <th className="px-4 py-3 text-left">Requested</th>
                   <th className="px-4 py-3 text-left">Action</th>
                 </tr>
               </thead>
+
               <tbody>
                 {data.rides.map((ride: Ride) => (
                   <RideCard

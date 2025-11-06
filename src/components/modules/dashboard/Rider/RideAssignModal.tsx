@@ -8,8 +8,9 @@ import {
 } from "@/components/ui/dialog";
 import { useRideRequestMutation } from "@/redux/features/ride/ride.api";
 import type { Driver, FindDriverPayload, IError } from "@/types";
-import { useNavigate } from 'react-router';
+import { useNavigate } from "react-router";
 import { toast } from "sonner";
+
 interface DriverModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -24,11 +25,11 @@ export const RideAssignModal: React.FC<DriverModalProps> = ({
   location,
 }) => {
   const [rideRequest, { isLoading }] = useRideRequestMutation();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
   if (!driver) return null;
 
   const handleConfirm = async () => {
-
     try {
       const payload = {
         pickupLocation: location.pickupLocation,
@@ -37,52 +38,54 @@ export const RideAssignModal: React.FC<DriverModalProps> = ({
       };
 
       await rideRequest(payload).unwrap();
-      navigate("/rider/my_rides")
       toast.success(`Ride request sent to ${driver.name}`);
+      navigate("/rider/my_rides");
       onClose();
     } catch (err) {
       const error = err as IError;
-      if (error.status === 400) {
-        toast.error(error.data.message);
-      } else {
-        toast.error("Some error occurred.");
-      }
-      console.log(err);
+      toast.error(error?.data?.message || "Something went wrong.");
     }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className=" z-[60] max-w-lg bg-gradient-to-tl from-primary/30 to-primary text-background">
+      <DialogContent className="max-w-md bg-white dark:bg-neutral-900 rounded-lg p-5 shadow-xl">
+
         <DialogHeader>
-          <DialogTitle className="text-3xl text-center">Confirm Ride 🚘</DialogTitle>
+          <DialogTitle className="text-xl font-semibold text-center">
+            Confirm Ride 🚘
+          </DialogTitle>
         </DialogHeader>
 
-        <div className="grid grid-cols-2 gap-2 border p-2 rounded-md">
-          <h2 className="col-span-2 text-xl font-semibold">From:</h2>
-          <span>Lat: {location.pickupLocation?.lat}</span>
-          <span>Lng: {location.pickupLocation?.lng}</span>
-          <h2 className="col-span-2 text-xl font-semibold">To:</h2>
-          <span>Lat: {location.destinationLocation?.lat}</span>
-          <span>Lng: {location.destinationLocation?.lng}</span>
+        {/* Route Info */}
+        <div className="mt-3 border rounded-md p-3 text-sm space-y-2">
+          <p className="font-medium text-gray-700 dark:text-gray-300">Route</p>
+          <p>Pickup: <span className="font-mono">{location.pickupLocation?.lat}, {location.pickupLocation?.lng}</span></p>
+          <p>Destination: <span className="font-mono">{location.destinationLocation?.lat}, {location.destinationLocation?.lng}</span></p>
         </div>
 
-        <div className="border p-2 rounded-md mt-4">
-          <h2 className="text-xl font-semibold mb-2">Driver Info:</h2>
-          <p>Name: {driver.name}</p>
-          <p>Vehicle: {driver.vehicleInfo?.type}</p>
-          <p>Plate: {driver.vehicleInfo?.plateNumber}</p>
+        {/* Driver Info */}
+        <div className="mt-4 border rounded-md p-3 text-sm space-y-1">
+          <p className="font-medium text-gray-700 dark:text-gray-300">Driver Info</p>
+          <p>Name: <span className="font-semibold">{driver.name}</span></p>
           <p>Phone: {driver.phone}</p>
+          <p>Vehicle: {driver.vehicleInfo?.type || "N/A"}</p>
+          <p>Plate: {driver.vehicleInfo?.plateNumber || "N/A"}</p>
         </div>
 
-        <DialogFooter className="flex justify-between pt-4">
-          <Button variant="outline" onClick={onClose} className='text-foreground '>
-            Close
+        <DialogFooter className="pt-5">
+          <Button variant="outline" onClick={onClose} className="w-full sm:w-auto">
+            Cancel
           </Button>
-          <Button onClick={handleConfirm}>
-            {isLoading ? "Confirming..." : "Confirm"}
+          <Button
+            onClick={handleConfirm}
+            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700"
+            disabled={isLoading}
+          >
+            {isLoading ? "Confirming..." : "Confirm Ride"}
           </Button>
         </DialogFooter>
+
       </DialogContent>
     </Dialog>
   );
