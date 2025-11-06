@@ -30,8 +30,8 @@ admin features)_
 | Role   | Email                | Password       |
 | ------ | -------------------- | -------------- |
 | Admin  | superadmin@gmail.com | SuperAdmin12@@ |
-| Driver | zafi@gmail.com       | Zafi@00        |
-| Rider  | mahi@gmail.com       | Mahi@00        |
+| Driver | driver2@gmail.com    | Driver123@@    |
+| Rider  | ridervai@gmail.com   | Rider123@@     |
 
 ---
 
