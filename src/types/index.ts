@@ -1,21 +1,16 @@
 export type {
-  SelectingMode,
-  LocationDisplayProps,
-  FindDriverPayload,
-  LocationCoords,
-  FindDriverApiResponse,
-  DriverLocation,
-  LocationSelectorProps,
-  MapComponentProps,
+  DriverLocation, FindDriverApiResponse, FindDriverPayload,
+  LocationCoords, LocationDisplayProps, LocationSelectorProps,
+  MapComponentProps, SelectingMode
 } from "./rider.types";
 
 export type {
   Driver,
   DriverQueryResult,
-  GetDriversApiResponse,
+  GetDriversApiResponse
 } from "./driver.types";
 
-export type { Ride, RideCardProps, IRideStatus } from "./ride.types";
+export type { IRideStatus, Ride, RideCardProps } from "./ride.types";
 
 export interface IError {
   status: number;

@@ -6,26 +6,17 @@ import {
   useDriverReqHandleMutation,
   useGetDriverRequestQuery,
   useGetDriversQuery,
+  useSuspendDriverMutation,
 } from "@/redux/features/driver/driver.api";
 import type { Driver } from '@/types';
 import { useState } from "react";
-import { useOutletContext } from "react-router";
 import { toast } from "sonner";
+import LoadingSpinner from './../../../../../public/loading';
 
 
 const Drivers = () => {
   const [currentDPage, setCurrentDPage] = useState(1);
   const [currentRDPage, setCurrentRDPage] = useState(1);
-
-  const { selectedPeriod, search, sort } = useOutletContext<{
-    selectedPeriod: string;
-    search: string;
-    sort: 'asc' | 'desc';
-  }>();
-
-  console.log(selectedPeriod, search, sort);
-
-
   const { data: drivers, isLoading: driverLoading } = useGetDriversQuery({
     limit: "6",
     page: currentDPage.toString(),
@@ -39,6 +30,8 @@ const Drivers = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedDriver, setSelectedDriver] = useState<any>(null);
   const [actionType, setActionType] = useState<"approved" | "refuse">("approved");
+  const [suspendDriver, { isLoading: suspending }] = useSuspendDriverMutation();
+
 
   const [handleRequest, { isLoading }] = useDriverReqHandleMutation();
 
@@ -47,6 +40,24 @@ const Drivers = () => {
     setActionType(type);
     setModalOpen(true);
   };
+
+
+
+  const handleSuspend = async (driver: any) => {
+    const newStatus = driver.isActive.toUpperCase() === "ACTIVE" ? "BLOCK" : "ACTIVE";
+
+    try {
+      await suspendDriver({ id: driver._id, status: newStatus }).unwrap();
+      toast.success(
+        `${driver.name} has been ${newStatus === "BLOCK" ? "suspended" : "activated"} successfully.`
+      );
+    } catch (err) {
+      console.log(err);
+      toast.error("Failed to update driver status.");
+    }
+  };
+
+
 
   const confirmAction = async () => {
     if (!selectedDriver) return;
@@ -64,10 +75,9 @@ const Drivers = () => {
     }
   };
 
-  if (driverLoading || requestLoading) return <div>Loading...</div>;
+  if (driverLoading || requestLoading) return <LoadingSpinner />
 
-
-  console.log(requests)
+  console.log(drivers?.drivers)
 
 
   return (
@@ -84,7 +94,8 @@ const Drivers = () => {
           {drivers?.drivers.map((driver: any) => (
             <div
               key={driver._id}
-              className="border rounded-xl shadow p-4 bg-white hover:shadow-lg transition"
+              className={`border rounded-xl shadow p-4 hover:shadow-lg transition ${driver.isActive.toUpperCase() === "BLOCK" ? "bg-red-100" : "bg-green-200"
+                }`}
             >
               <h3 className="text-lg font-semibold mb-1">{driver.name}</h3>
               <p className="text-sm text-gray-600 mb-1"><strong>Email:</strong> {driver.email}</p>
@@ -96,13 +107,21 @@ const Drivers = () => {
               <p className="text-sm text-gray-600 mb-1"><strong>Available:</strong> {driver.isAvailable ? "Yes" : "No"}</p>
               <p className="text-sm text-gray-600"><strong>Created:</strong> {new Date(driver.createdAt).toLocaleDateString()}</p>
               <div className="mt-4 flex justify-between">
-                <Button onClick={() => {
-                  toast.success('This feature is coming soon!');
-                }} variant="outline">Suspend</Button>
-                <Button onClick={() => {
-                  toast.success('This feature is coming soon!');
-                }} className="ml-2">Contacts</Button>
+                <Button
+                  onClick={() => handleSuspend(driver)}
+                  variant={driver.isActive.toUpperCase() === "ACTIVE" ? "destructive" : "default"}
+                  disabled={suspending}
+                >
+                  {driver.isActive.toUpperCase() === "ACTIVE" ? "Suspend" : "Activate"}
+                </Button>
+
+
+                <Button onClick={() => toast.success('This feature is coming soon!')} className="ml-2">
+                  Contacts
+                </Button>
               </div>
+
+
             </div>
           ))}
         </div>
@@ -175,7 +194,7 @@ const Drivers = () => {
         isLoading={isLoading}
         actionType={actionType}
       />
-    </div>
+    </div >
   );
 };
 

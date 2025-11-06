@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import RideCard from '@/components/modules/dashboard/admin/RideCard';
+
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -8,8 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+
 import { useMetadataQuery } from '@/redux/features/auth/auth.api';
-import { useGetDriversQuery } from '@/redux/features/driver/driver.api';
 import {
   Activity,
   Clock,
@@ -33,13 +34,14 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import LoadingSpinner from './../../../../../public/loading';
 
 export default function DashboardHome() {
   const navigate = useNavigate();
   const { data: metadata, isLoading, isError } = useMetadataQuery(undefined);
   const { data: admin } = useMetadataQuery(undefined);
 
-  if (isLoading) return <div className="p-6">Loading dashboard...</div>;
+  if (isLoading) return <LoadingSpinner />
   if (isError) return <div className="p-6 text-red-500">Failed to load dashboard.</div>;
 
 

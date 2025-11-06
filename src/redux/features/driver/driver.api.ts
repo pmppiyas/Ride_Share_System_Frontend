@@ -66,7 +66,7 @@ export const authApi = baseApi.injectEndpoints({
         url: "/ride/my-drives",
         method: "GET",
       }),
-      providesTags: ["DRIVER"],
+      providesTags: ["DRIVER", "RIDE"],
       transformResponse: (res: any) => res.data.rides,
     }),
 
@@ -89,6 +89,16 @@ export const authApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["DRIVER"],
     }),
+    suspendDriver: builder.mutation<
+      { message: string },
+      { id: string; status: "ACTIVE" | "BLOCK" }
+    >({
+      query: ({ id, status }) => ({
+        url: `/user/suspend/${id}/${status}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["DRIVER"],
+    }),
   }),
 });
 
@@ -102,4 +112,5 @@ export const {
   useGetMyDrivesQuery,
   useSetRideStatusMutation,
   useActiveStatusMutation,
+  useSuspendDriverMutation,
 } = authApi;

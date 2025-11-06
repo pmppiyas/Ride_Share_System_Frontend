@@ -82,14 +82,7 @@ const DashboardLayoutContent = () => {
           <item.icon className="h-4 w-4" />
           <span className="truncate">{item.label}</span>
         </div>
-        {item.badge && (
-          <Badge
-            variant={isActive ? "secondary" : "outline"}
-            className="text-xs px-2 py-0.5"
-          >
-            {item.badge}
-          </Badge>
-        )}
+
       </Link>
     );
   };
